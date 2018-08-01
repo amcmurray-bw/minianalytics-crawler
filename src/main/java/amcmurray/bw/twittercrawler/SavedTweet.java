@@ -13,7 +13,6 @@ public final class SavedTweet {
     long id;
 
     String text;
-
     String queryId;
 
     public SavedTweet(long id, String text, String queryId) {
