@@ -1,24 +1,27 @@
 package amcmurray.bw.twittercrawler;
 
-import javax.inject.Inject;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.twitter.api.SearchParameters;
 import org.springframework.social.twitter.api.SearchResults;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Service;
 
+import amcmurray.bw.twitterdomainobjects.SavedTweet;
+
+
 @Service
 public class TweetService {
 
-    private TweetRepository tweetRepository;
-    private Twitter twitter;
+    private final TweetRepository tweetRepository;
+    private final Twitter twitter;
 
-    @Inject
-    public TweetService(Twitter twitter, TweetRepository tweetRepository) {
-        this.twitter = twitter;
+    @Autowired
+    public TweetService(TweetRepository tweetRepository, Twitter twitter) {
         this.tweetRepository = tweetRepository;
+        this.twitter = twitter;
     }
+
 
     public void getTweetsAndSaveToDB() {
 

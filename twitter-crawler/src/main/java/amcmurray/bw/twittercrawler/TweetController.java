@@ -1,7 +1,6 @@
 package amcmurray.bw.twittercrawler;
 
-import javax.inject.Inject;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Controller;
@@ -13,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/")
 public class TweetController {
 
-    private Twitter twitter;
-    private ConnectionRepository connectionRepository;
-    private TweetService tweetService;
+    private final Twitter twitter;
+    private final ConnectionRepository connectionRepository;
+    private final TweetService tweetService;
 
-    @Inject
+    @Autowired
     public TweetController(Twitter twitter, ConnectionRepository connectionRepository, TweetService tweetService) {
         this.twitter = twitter;
         this.connectionRepository = connectionRepository;
