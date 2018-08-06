@@ -22,7 +22,6 @@ public class TweetService {
         this.twitter = twitter;
     }
 
-
     public void getTweetsAndSaveToDB() {
 
         //searching for a blank space in a tweet, in english
@@ -31,9 +30,7 @@ public class TweetService {
         SearchResults rawSearch = twitter.searchOperations().search(params);
 
         for (Tweet tweet : rawSearch.getTweets()) {
-
             SavedTweet savedTweet = new SavedTweet(tweet.getId(), tweet.getText(), "-1");
-
             tweetRepository.insert(savedTweet);
         }
     }

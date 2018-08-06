@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class TwittercrawlerApplicationTests {
                 .andExpect(content().string(containsString("Connect to Twitter")));
     }
 
+    @Ignore
     @Test
     public void connectHandlerRedirects() throws Exception {
         if (appId.startsWith("realConsumer")) {

@@ -31,7 +31,6 @@ public class TweetController {
         }
 
         model.addAttribute(twitter.userOperations().getUserProfile());
-
         tweetService.getTweetsAndSaveToDB();
 
         return "hello";
