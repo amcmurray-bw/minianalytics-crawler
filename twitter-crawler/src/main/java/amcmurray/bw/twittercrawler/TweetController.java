@@ -2,13 +2,10 @@ package amcmurray.bw.twittercrawler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-@RequestMapping("/")
 public class TweetController {
-
 
     private final TweetService tweetService;
 
@@ -17,10 +14,8 @@ public class TweetController {
         this.tweetService = tweetService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping("/")
     public String helloTwitter() {
-
-        tweetService.getTweetsAndSaveToDB();
 
         return "hello";
     }
