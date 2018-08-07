@@ -1,8 +1,11 @@
 package amcmurray.bw.twittercrawler;
 
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.social.twitter.api.SearchParameters;
@@ -19,6 +22,8 @@ public class TweetService {
     private final TweetRepository tweetRepository;
     private final Twitter twitter;
     private final ExecutorService scheduledTaskExecutorService;
+    private final Logger logger = LoggerFactory.getLogger(TweetService.class);
+
 
     @Autowired
     public TweetService(TweetRepository tweetRepository, Twitter twitter, ExecutorService scheduledTaskExecutorService) {
@@ -30,12 +35,13 @@ public class TweetService {
     //cron set to every 15 minutes on the hour, eg 12:00, 12:15 etc
     @Scheduled(cron = "0 0/15 * * * *")
     public void getTweetsAndSaveToDB() {
-        System.out.println("Scheduled task");
+
+        logger.info("Scheduled task started at " + new Date());
         CompletableFuture.runAsync(() -> saveTweetsIntoDB(), scheduledTaskExecutorService).exceptionally(throwable -> handleAsyncException(throwable));
     }
 
-    public Void handleAsyncException(Throwable throwable) {
-        System.out.println(throwable.getCause());
+    private Void handleAsyncException(Throwable throwable) {
+        logger.info(throwable.getCause().toString());
         return null;
     }
 
@@ -51,6 +57,6 @@ public class TweetService {
             tweetRepository.insert(savedTweet);
         }
 
-        System.out.println("Tweets saved");
+        logger.info("Tweets saved at " + new Date());
     }
 }
