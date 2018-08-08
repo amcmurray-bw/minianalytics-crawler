@@ -26,7 +26,10 @@ public class TweetService {
 
 
     @Autowired
-    public TweetService(TweetRepository tweetRepository, Twitter twitter, ExecutorService scheduledTaskExecutorService) {
+    public TweetService(TweetRepository tweetRepository,
+                        Twitter twitter,
+                        ExecutorService scheduledTaskExecutorService) {
+
         this.tweetRepository = tweetRepository;
         this.twitter = twitter;
         this.scheduledTaskExecutorService = scheduledTaskExecutorService;
@@ -37,16 +40,19 @@ public class TweetService {
     public void getTweetsAndSaveToDB() {
 
         logger.info("Scheduled task started at " + new Date());
-        CompletableFuture.runAsync(() -> saveTweetsIntoDB(), scheduledTaskExecutorService).exceptionally(throwable -> handleAsyncException(throwable));
+        CompletableFuture.runAsync(() -> saveRandomTweetsIntoDB(),
+                scheduledTaskExecutorService).exceptionally(throwable -> handleAsyncException(throwable));
     }
 
     private Void handleAsyncException(Throwable throwable) {
-        logger.info(throwable.getCause().toString());
+        logger.info("MSG: " + throwable.getMessage().toString());
+        logger.info("STACK TRACE: " + throwable.getStackTrace().toString());
+        logger.info("CAUSE: " + throwable.getCause().toString());
         return null;
     }
 
 
-    private void saveTweetsIntoDB() {
+    private void saveRandomTweetsIntoDB() {
         //searching for a blank space in a tweet, in english
         SearchParameters params = new SearchParameters("%20");
         params.lang("en");

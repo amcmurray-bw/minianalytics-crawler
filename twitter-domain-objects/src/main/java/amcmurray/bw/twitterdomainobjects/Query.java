@@ -1,7 +1,9 @@
 package amcmurray.bw.twitterdomainobjects;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "savedQueries")
 public final class Query {
 
     @Id
