@@ -51,7 +51,6 @@ public class TweetService {
         return null;
     }
 
-
     private void saveRandomTweetsIntoDB() {
         //searching for a blank space in a tweet, in english
         SearchParameters params = new SearchParameters("%20");
@@ -59,7 +58,7 @@ public class TweetService {
         SearchResults rawSearch = twitter.searchOperations().search(params);
 
         for (Tweet tweet : rawSearch.getTweets()) {
-            SavedTweet savedTweet = new SavedTweet(tweet.getId(), tweet.getText(), "-1");
+            SavedTweet savedTweet = new SavedTweet(tweet.getId(), tweet.getText(), -1);
             tweetRepository.insert(savedTweet);
         }
 

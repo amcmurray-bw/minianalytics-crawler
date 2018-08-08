@@ -13,9 +13,9 @@ public final class SavedTweet {
     long id;
 
     String text;
-    String queryId;
+    int queryId;
 
-    public SavedTweet(long id, String text, String queryId) {
+    public SavedTweet(long id, String text, int queryId) {
         this.id = id;
         this.text = text;
         this.queryId = queryId;
@@ -29,7 +29,7 @@ public final class SavedTweet {
         return text;
     }
 
-    public String getQueryId() {
+    public int getQueryId() {
         return queryId;
     }
 
