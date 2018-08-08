@@ -1,6 +1,7 @@
 package amcmurray.bw.twittercrawler;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
@@ -23,6 +24,7 @@ public class TweetService {
     private final Twitter twitter;
     private final ExecutorService scheduledTaskExecutorService;
     private final Logger logger = LoggerFactory.getLogger(TweetService.class);
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/YY HH:mm:ss");
 
 
     @Autowired
@@ -39,15 +41,13 @@ public class TweetService {
     @Scheduled(cron = "0 0/15 * * * *")
     public void getTweetsAndSaveToDB() {
 
-        logger.info("Scheduled task started at " + new Date());
+        logger.info("Scheduled task started at {}", LocalDateTime.now().format(formatter));
         CompletableFuture.runAsync(() -> saveRandomTweetsIntoDB(),
                 scheduledTaskExecutorService).exceptionally(throwable -> handleAsyncException(throwable));
     }
 
     private Void handleAsyncException(Throwable throwable) {
-        logger.info("MSG: " + throwable.getMessage().toString());
-        logger.info("STACK TRACE: " + throwable.getStackTrace().toString());
-        logger.info("CAUSE: " + throwable.getCause().toString());
+        logger.warn("Exception occurred: ", throwable);
         return null;
     }
 
@@ -63,6 +63,6 @@ public class TweetService {
             tweetRepository.insert(savedTweet);
         }
 
-        logger.info("Tweets saved at " + new Date());
+        logger.info("Tweets saved at {}", LocalDateTime.now().format(formatter));
     }
 }

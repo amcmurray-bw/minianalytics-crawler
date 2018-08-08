@@ -1,6 +1,4 @@
-/target/
-twitter-crawler/target/
-twitter-domain-objects/target/
+target/
 !.mvn/wrapper/maven-wrapper.jar
 
 mvnw.cmd

@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.social.TwitterAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
-@EnableAutoConfiguration(exclude = {TwitterAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = TwitterAutoConfiguration.class)
 @SpringBootApplication
 public class TwittercrawlerApplication {
 
