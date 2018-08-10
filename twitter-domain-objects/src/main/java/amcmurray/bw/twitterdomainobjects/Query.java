@@ -1,22 +1,21 @@
 package amcmurray.bw.twitterdomainobjects;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "savedQueries")
 public final class Query {
 
     @Id
-    String id;
+    int id;
     String text;
 
-    public void setId(String id) {
+    public Query(int id, String text) {
         this.id = id;
-    }
-
-    public void setText(String text) {
         this.text = text;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
