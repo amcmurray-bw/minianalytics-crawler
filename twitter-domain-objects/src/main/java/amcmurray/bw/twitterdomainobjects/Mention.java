@@ -3,27 +3,20 @@ package amcmurray.bw.twitterdomainobjects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/*
-class limits amount of information to process to just ID and the tweet text
- */
 @Document(collection = "savedMentions")
 public final class Mention {
-
-    //will add date and other metrics later
 
     @Id
     String id;
     int queryId;
     MentionType mentionType;
     String text;
-
     String languageCode;
     int favouriteCount;
 
-
     public Mention(String id, int queryId, MentionType mentionType,
-                   String text, String languageCode,
-                   int favouriteCount) {
+                   String text,
+                   String languageCode, int favouriteCount) {
         this.id = id;
         this.queryId = queryId;
         this.mentionType = mentionType;
@@ -47,6 +40,7 @@ public final class Mention {
     public String getText() {
         return text;
     }
+
 
     public String getLanguageCode() {
         return languageCode;

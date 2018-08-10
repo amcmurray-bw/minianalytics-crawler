@@ -1,7 +1,9 @@
 package amcmurray.bw.twittercrawler;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
@@ -15,45 +17,47 @@ import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Service;
 
+import amcmurray.bw.twittercrawler.repositories.MentionRepository;
+import amcmurray.bw.twittercrawler.repositories.QueryRepository;
+import amcmurray.bw.twitterdomainobjects.Mention;
+import amcmurray.bw.twitterdomainobjects.MentionType;
 import amcmurray.bw.twitterdomainobjects.Query;
-import amcmurray.bw.twitterdomainobjects.SavedTweet;
 
 @Service
-public class TweetService {
+public class MentionService {
 
-    private final TweetRepository tweetRepository;
     private final QueryRepository queryRepository;
+    private final MentionRepository mentionRepository;
     private final Twitter twitter;
     private final ExecutorService scheduledTaskExecutorService;
-    private final Logger logger = LoggerFactory.getLogger(TweetService.class);
+    private final Logger logger = LoggerFactory.getLogger(MentionService.class);
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/YY HH:mm:ss");
 
-
     @Autowired
-    public TweetService(TweetRepository tweetRepository,
-                        QueryRepository queryRepository, Twitter twitter,
-                        ExecutorService scheduledTaskExecutorService) {
+    public MentionService(MentionRepository mentionRepository,
+                          QueryRepository queryRepository, Twitter twitter,
+                          ExecutorService scheduledTaskExecutorService) {
 
-        this.tweetRepository = tweetRepository;
+        this.mentionRepository = mentionRepository;
         this.queryRepository = queryRepository;
         this.twitter = twitter;
         this.scheduledTaskExecutorService = scheduledTaskExecutorService;
     }
 
     //cron set to every 5 minutes on the hour, eg 12:00, 12:05 etc
-    @Scheduled(cron = "0 0/5 * * * *")
+    @Scheduled(cron = "0 0/1 * * * *")
     public void getTweetsAndSaveToDB() {
 
         logger.info("Scheduled task started at {}", LocalDateTime.now().format(formatter));
-        CompletableFuture.runAsync(() -> updateAllQueriesWithMentions(),
-                scheduledTaskExecutorService).exceptionally(throwable -> handleAsyncException(throwable));
+        CompletableFuture
+                .runAsync(() -> updateAllQueriesWithMentions(), scheduledTaskExecutorService)
+                .exceptionally(throwable -> handleAsyncException(throwable));
     }
 
     private Void handleAsyncException(Throwable throwable) {
-        logger.warn("Exception occurred: ", throwable);
+        logger.warn("Exception occurred while trying to add mentions into database: ", throwable);
         return null;
     }
-
 
     private void updateAllQueriesWithMentions() {
 
@@ -66,18 +70,21 @@ public class TweetService {
         logger.info("Updating all query mentions finished at: {}", LocalDateTime.now().format(formatter));
     }
 
+    //method to gather new mentions of a query
     private void getNewMentions(Query query) {
 
         SearchParameters params = new SearchParameters(query.getText());
-        params.lang("en");
+        params.lang("en"); //english for now
         SearchResults rawSearch = twitter.searchOperations().search(params);
 
         for (Tweet tweet : rawSearch.getTweets()) {
-            SavedTweet savedTweet = new SavedTweet(tweet.getIdStr(), tweet.getText(), query.getId());
-            tweetRepository.save(savedTweet);
+            //getting tweet info and converting date to zonedDateTime
+            Mention mention = new Mention(UUID.randomUUID().toString(),
+                    query.getId(), MentionType.TWITTER,
+                    tweet.getText(),
+                    tweet.getLanguageCode(), tweet.getFavoriteCount());
+            mentionRepository.insert(mention);
+
         }
-
     }
-
-
 }
