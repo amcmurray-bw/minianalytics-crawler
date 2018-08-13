@@ -9,13 +9,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public final class Mention {
 
     @Id
-    String id;
-    int queryId;
-    MentionType mentionType;
-    String text;
-    Date createdAt;
-    String languageCode;
-    int favouriteCount;
+    private String id;
+    private int queryId;
+    private MentionType mentionType;
+    private String text;
+    private Date createdAt;
+    private String languageCode;
+    private int favouriteCount;
 
     public Mention(String id, int queryId, MentionType mentionType,
                    String text, Date createdAt,

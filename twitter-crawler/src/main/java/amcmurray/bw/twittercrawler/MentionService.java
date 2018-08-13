@@ -44,7 +44,7 @@ public class MentionService {
     }
 
     //cron set to every 5 minutes on the hour, eg 12:00, 12:05 etc
-    @Scheduled(cron = "0 0/5 * * * *")
+    @Scheduled(cron = "0 0/1 * * * *")
     public void getTweetsAndSaveToDB() {
 
         logger.info("Scheduled task started at {}", LocalDateTime.now().format(formatter));

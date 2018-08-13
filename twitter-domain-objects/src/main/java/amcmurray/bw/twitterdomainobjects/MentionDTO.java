@@ -3,13 +3,13 @@ package amcmurray.bw.twitterdomainobjects;
 public class MentionDTO {
 
 
-    String id;
-    int queryId;
-    MentionType mentionType;
-    String text;
-    String dateCreated;
-    String languageCode;
-    int favouriteCount;
+    private String id;
+    private  int queryId;
+    private  MentionType mentionType;
+    private  String text;
+    private  String dateCreated;
+    private  String languageCode;
+    private  int favouriteCount;
 
     public MentionDTO(String id, int queryId, MentionType mentionType,
                       String text, String dateCreated,
