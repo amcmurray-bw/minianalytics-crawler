@@ -1,7 +1,6 @@
 package amcmurray.bw.twittercrawler;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -45,7 +44,7 @@ public class MentionService {
     }
 
     //cron set to every 5 minutes on the hour, eg 12:00, 12:05 etc
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     public void getTweetsAndSaveToDB() {
 
         logger.info("Scheduled task started at {}", LocalDateTime.now().format(formatter));
@@ -78,10 +77,9 @@ public class MentionService {
         SearchResults rawSearch = twitter.searchOperations().search(params);
 
         for (Tweet tweet : rawSearch.getTweets()) {
-            //getting tweet info and converting date to zonedDateTime
             Mention mention = new Mention(UUID.randomUUID().toString(),
                     query.getId(), MentionType.TWITTER,
-                    tweet.getText(),
+                    tweet.getText(), tweet.getCreatedAt(),
                     tweet.getLanguageCode(), tweet.getFavoriteCount());
             mentionRepository.insert(mention);
 
