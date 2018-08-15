@@ -4,12 +4,12 @@ public class MentionDTO {
 
 
     private String id;
-    private  int queryId;
-    private  MentionType mentionType;
-    private  String text;
-    private  String dateCreated;
-    private  String languageCode;
-    private  int favouriteCount;
+    private int queryId;
+    private MentionType mentionType;
+    private String text;
+    private String dateCreated;
+    private String languageCode;
+    private int favouriteCount;
 
     public MentionDTO(String id, int queryId, MentionType mentionType,
                       String text, String dateCreated,
@@ -22,8 +22,6 @@ public class MentionDTO {
         this.languageCode = languageCode;
         this.favouriteCount = favouriteCount;
     }
-
-    public MentionDTO() {}
 
     public String getDateCreated() {
         return dateCreated;

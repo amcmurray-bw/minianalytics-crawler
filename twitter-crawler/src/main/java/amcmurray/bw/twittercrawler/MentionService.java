@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
@@ -31,6 +30,9 @@ public class MentionService {
     private final Twitter twitter;
     private final ExecutorService scheduledTaskExecutorService;
     private final Logger logger = LoggerFactory.getLogger(MentionService.class);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd  HH:mm:ss.SSS Z")
+                    .withZone(ZoneId.systemDefault());
 
     @Autowired
     public MentionService(MentionRepository mentionRepository,
@@ -43,33 +45,39 @@ public class MentionService {
         this.scheduledTaskExecutorService = scheduledTaskExecutorService;
     }
 
-    //cron set to every 5 minutes on the hour, eg 12:00, 12:05 etc
+    /**
+     * Scheduled method to grab more mentions
+     * cron set to every 5 minutes on the hour, eg 12:00, 12:05 etc
+     */
     @Scheduled(cron = "0 0/5 * * * *")
     public void getTweetsAndSaveToDB() {
 
-        logger.info("Scheduled task started at {}", getFormattedDate(Instant.now()));
-        CompletableFuture
-                .runAsync(() -> updateAllQueriesWithMentions(), scheduledTaskExecutorService)
-                .exceptionally(throwable -> handleAsyncException(throwable));
+        logger.info("Scheduled task started at {}", DATE_TIME_FORMATTER.format(Instant.now()));
+
+        try {
+            updateAllQueriesWithMentions();
+        } catch (Exception e) {
+            logger.warn("Exception occurred while trying to add mentions into database: ", e.getMessage());
+        }
     }
 
-    private Void handleAsyncException(Throwable throwable) {
-        logger.warn("Exception occurred while trying to add mentions into database: ", throwable);
-        return null;
-    }
 
     private void updateAllQueriesWithMentions() {
 
-        logger.info("Updating all query mentions started at: {}", getFormattedDate(Instant.now()));
+        logger.info("Updating all query mentions started at: {}",
+                DATE_TIME_FORMATTER.format(Instant.now()));
 
         //for each query, get new mentions
         for (Query query : queryRepository.findAll()) {
             getNewMentions(query);
         }
-        logger.info("Updating all query mentions finished at: {}", getFormattedDate(Instant.now()));
+        logger.info("Updating all query mentions finished at: {}",
+                DATE_TIME_FORMATTER.format(Instant.now()));
     }
 
-    //method to gather new mentions of a query
+    /**
+     * Gathers new mentions of a query.
+     */
     private void getNewMentions(Query query) {
 
         SearchParameters params = new SearchParameters(query.getText());
@@ -82,14 +90,6 @@ public class MentionService {
                     tweet.getText(), tweet.getCreatedAt(),
                     tweet.getLanguageCode(), tweet.getFavoriteCount());
             mentionRepository.insert(mention);
-
         }
-    }
-
-    //formatter for current instance
-    private String getFormattedDate(Instant time) {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd  HH:mm:ss.SSS Z")
-                .withZone(ZoneId.systemDefault())
-                .format(time);
     }
 }
