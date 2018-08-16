@@ -7,8 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public final class Query {
 
     @Id
-    int id;
-    String text;
+    private int id;
+    private  String text;
 
     public Query(int id, String text) {
         this.id = id;
