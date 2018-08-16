@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>amcmurray.bw</groupId>
-        <artifactId>twitter-crawler-parent</artifactId>
+        <artifactId>minianalytics-parent</artifactId>
         <version>0.1.0</version>
     </parent>
 

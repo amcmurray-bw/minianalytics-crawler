@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  minianalyticsapi:
+    build: minianalytics-api/.
+    restart: always
+    container_name: minianalyticsapi
+    ports:
+      - 8081:8081
+    working_dir: /opt/app
+    hostname: minianalyticsapi
+    environment:
+      WAIT_HOSTS: mongodb:27017
+
+  minianalyticscrawler:
+    build: ./
+    restart: always
+    container_name: minianalyticscrawler
+    ports:
+      - 8080:8080
+    working_dir: /opt/app
+    environment:
+      WAIT_HOSTS: mongodb:27017
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - 27017:27017
