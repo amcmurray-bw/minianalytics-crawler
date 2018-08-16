@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>amcmurray.bw</groupId>
-    <artifactId>twitter-crawler-parent</artifactId>
+    <artifactId>minianalytics-parent</artifactId>
     <version>0.1.0</version>
     <packaging>pom</packaging>
 
@@ -17,6 +17,7 @@
     <modules>
         <module>twitter-domain-objects</module>
         <module>twitter-crawler</module>
+        <module>minianalytics-api</module>
     </modules>
 
     <dependencies></dependencies>
