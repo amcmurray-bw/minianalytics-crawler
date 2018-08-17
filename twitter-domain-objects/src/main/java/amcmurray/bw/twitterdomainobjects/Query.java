@@ -24,17 +24,4 @@ public final class Query {
     public String getText() {
         return text;
     }
-
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Query not found.")  // 404 error
-    public static class QueryNotFoundException extends RuntimeException {
-        public int id;
-
-        public QueryNotFoundException(int id) {
-            this.id = id;
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Query text must not be empty!")  // 400 error
-    public static class QuerySearchNullException extends RuntimeException {
-    }
 }

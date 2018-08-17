@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import amcmurray.bw.QueryRequestDTO;
+import amcmurray.bw.exceptions.QueryExceptions;
 import amcmurray.bw.repositories.QueryRepository;
 import amcmurray.bw.twitterdomainobjects.Query;
 
@@ -28,7 +29,7 @@ public class QueryService {
      */
     public Query createQuery(QueryRequestDTO request) {
         if (request.getSearch().equals("")) {
-            throw new Query.QuerySearchNullException();
+            throw new QueryExceptions.QuerySearchNullException();
         } else {
             Query query = new Query(getNewQueryId(), request.getSearch());
             return queryRepository.save(query);
@@ -51,10 +52,10 @@ public class QueryService {
     public Query findQueryById(int id) {
         Query foundQuery = queryRepository.findById(id);
 
-        if (foundQuery == null) {
-            throw new Query.QueryNotFoundException(id);
-        } else {
+        if (foundQuery != null) {
             return foundQuery;
+        } else {
+            throw new QueryExceptions.QueryNotFoundException(id);
         }
     }
 

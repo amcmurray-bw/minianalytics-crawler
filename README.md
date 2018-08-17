@@ -13,7 +13,7 @@ Twitter Keys
 ```
 ## Getting Started
 
-###Twitter Secret App Keys
+### Twitter Secret App Keys
 you need to apply for a [Twitter Developer Account](https://developer.twitter.com/)
  where you can then make an [app](https://developer.twitter.com/en/apps). 
  After this you can then generate **Consumer API keys** like so:
@@ -21,14 +21,14 @@ you need to apply for a [Twitter Developer Account](https://developer.twitter.co
  
  These keys are then added to the ```application.properties``` file. 
 
-###Maven
+### Maven
 Install Maven from here [Maven](https://maven.apache.org//download.cgi).
 
 Then in the project directory build the .jar files with a:
 ```
-maven clean install
+mvn clean install
 ```
-###Docker
+### Docker
 Then, if you haven't already, download [Docker](https://www.docker.com/get-started). 
  If you are on Mac/Windows, [Docker Compose](https://docs.docker.com/compose) is automatically installed. 
  On Linux, make sure you have the latest version of [Compose](https://docs.docker.com/compose/install). 
@@ -45,10 +45,11 @@ Then, head to:
 localhost:8081
 ```
 where you can use:
+* /query (to make a new query)
 * /queries (to get all queries)
-* /queries/ _your query id here_ (to get a specific query)
+* /queries/_{queryId}_ (to get a specific query)
 * /mentions (get all mentions)
-* /mentions/ _your query id here_ (get all mentions for a query)
+* /mentions/_{queryId}_ (get all mentions for a query)
 
 ## Built With
 
