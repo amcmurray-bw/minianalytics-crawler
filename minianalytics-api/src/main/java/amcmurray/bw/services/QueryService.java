@@ -20,9 +20,19 @@ public class QueryService {
         this.queryRepository = queryRepository;
     }
 
+    /**
+     * Method to create a new query.
+     *
+     * @param request QueryDTO
+     * @return new query, after saving to Database
+     */
     public Query createQuery(QueryRequestDTO request) {
-        Query query = new Query(getNewQueryId(), request.getSearch());
-        return queryRepository.save(query);
+        if (request.getSearch().equals("")) {
+            throw new Query.QuerySearchNullException();
+        } else {
+            Query query = new Query(getNewQueryId(), request.getSearch());
+            return queryRepository.save(query);
+        }
     }
 
     private int getNewQueryId() {
@@ -32,12 +42,23 @@ public class QueryService {
         return lastQuery == null ? 0 : lastQuery.getId() + 1;
     }
 
+    /**
+     * Method to find query.
+     *
+     * @param id of query
+     * @return found query
+     */
     public Query findQueryById(int id) {
-        return queryRepository.findById(id);
+        Query foundQuery = queryRepository.findById(id);
+
+        if (foundQuery == null) {
+            throw new Query.QueryNotFoundException(id);
+        } else {
+            return foundQuery;
+        }
     }
 
     public List<Query> getListAllQueries() {
         return queryRepository.findAll();
     }
-
 }
