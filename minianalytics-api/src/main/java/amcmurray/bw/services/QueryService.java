@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import amcmurray.bw.QueryRequestDTO;
+import amcmurray.bw.exceptions.QueryExceptions;
 import amcmurray.bw.repositories.QueryRepository;
 import amcmurray.bw.twitterdomainobjects.Query;
 
-
+import org.apache.commons.lang3.StringUtils;
 @Service
 public class QueryService {
 
@@ -20,9 +21,20 @@ public class QueryService {
         this.queryRepository = queryRepository;
     }
 
+    /**
+     * Method to create a new query.
+     *
+     * @param request QueryDTO
+     * @return new query, after saving to Database
+     * @throws {QuerySearchNullException} if query string is blank
+     */
     public Query createQuery(QueryRequestDTO request) {
-        Query query = new Query(getNewQueryId(), request.getSearch());
-        return queryRepository.save(query);
+        if (StringUtils.isBlank(request.getSearch())) {
+            throw new QueryExceptions.QuerySearchNullException();
+        } else {
+            Query query = new Query(getNewQueryId(), request.getSearch());
+            return queryRepository.save(query);
+        }
     }
 
     private int getNewQueryId() {
@@ -32,12 +44,23 @@ public class QueryService {
         return lastQuery == null ? 0 : lastQuery.getId() + 1;
     }
 
+    /**
+     * Method to find query.
+     *
+     * @param id of query
+     * @return found query
+     * @throws {QueryNotFoundException} if no query is found
+     */
     public Query findQueryById(int id) {
-        return queryRepository.findById(id);
+        Query foundQuery = queryRepository.findById(id);
+
+        if (foundQuery == null) {
+            throw new QueryExceptions.QueryNotFoundException(id);
+        }
+        return foundQuery;
     }
 
     public List<Query> getListAllQueries() {
         return queryRepository.findAll();
     }
-
 }

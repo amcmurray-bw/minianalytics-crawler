@@ -13,7 +13,7 @@ services:
       WAIT_HOSTS: mongodb:27017
 
   minianalyticscrawler:
-    build: ./
+    build: twitter-crawler/.
     restart: always
     container_name: minianalyticscrawler
     ports:

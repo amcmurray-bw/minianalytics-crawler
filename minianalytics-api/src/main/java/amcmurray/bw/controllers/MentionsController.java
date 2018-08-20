@@ -24,7 +24,10 @@ public class MentionsController {
     }
 
     /**
-     * view mentions of single query
+     * View mentions of single query. Finds mentions and converts to DTO.
+     *
+     * @param queryId the id of the query to be viewed.
+     * @return returns a list of MentionDTOs with the same queryId.
      */
     @GetMapping("/mentions/{queryId}")
     public List<MentionDTO> viewMentionsOfQuery(@PathVariable("queryId") int queryId) {
@@ -35,6 +38,8 @@ public class MentionsController {
     /**
      * view all mentions, not relating to any query
      * (possibility to be removed in future)
+     *
+     * @return all mentions as MentionDTOs
      */
     @GetMapping("/mentions")
     public List<MentionDTO> viewAllMentions() {

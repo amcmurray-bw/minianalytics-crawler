@@ -6,7 +6,7 @@ RUN apk update && apk add bash
 RUN mkdir -p /opt/app
 ENV PROJECT_HOME /opt/app
 
-COPY twitter-crawler/target/twitter-crawler-0.1.0.jar $PROJECT_HOME/twitter-crawler-0.1.0.jar
+COPY target/twitter-crawler-0.1.0.jar $PROJECT_HOME/twitter-crawler-0.1.0.jar
 
 WORKDIR $PROJECT_HOME
 

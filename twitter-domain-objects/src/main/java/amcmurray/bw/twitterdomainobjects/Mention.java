@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "savedMentions")
-public final class Mention {
+public class Mention {
 
     @Id
     private String id;

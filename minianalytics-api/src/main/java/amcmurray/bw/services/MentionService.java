@@ -12,13 +12,24 @@ import amcmurray.bw.twitterdomainobjects.Mention;
 public class MentionService {
 
     private MentionRepository mentionRepository;
+    private QueryService queryService;
 
     @Autowired
-    public MentionService(MentionRepository mentionRepository) {
+    public MentionService(MentionRepository mentionRepository, QueryService queryService) {
         this.mentionRepository = mentionRepository;
+        this.queryService = queryService;
     }
 
+    /**
+     * If a query is returned, find all mentions of the queryId
+     *
+     * @return list of mentions
+     * @throws {QueryNotFoundException} if query not found
+     */
     public List<Mention> findAllMentionsOfQuery(int queryId) {
+
+        queryService.findQueryById(queryId);
+
         return mentionRepository.findAllByQueryId(queryId);
     }
 

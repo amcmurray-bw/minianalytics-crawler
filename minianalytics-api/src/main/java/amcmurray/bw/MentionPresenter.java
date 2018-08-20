@@ -36,7 +36,6 @@ public class MentionPresenter {
      */
     private String convertDate(Date date) {
 
-        //convert date to zoned date time, and then format to string
         return ZonedDateTime.ofInstant(
                 date.toInstant(), ZoneId.of("UTC"))
                 .format(dateFormat);
