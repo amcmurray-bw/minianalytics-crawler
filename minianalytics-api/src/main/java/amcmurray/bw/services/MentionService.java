@@ -22,8 +22,9 @@ public class MentionService {
 
     /**
      * If a query is returned, find all mentions of the queryId
+     *
      * @return list of mentions
-     * @throws if query not found
+     * @throws {QueryNotFoundException} if query not found
      */
     public List<Mention> findAllMentionsOfQuery(int queryId) {
 

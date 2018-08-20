@@ -26,6 +26,7 @@ public class QueryService {
      *
      * @param request QueryDTO
      * @return new query, after saving to Database
+     * @throws {QuerySearchNullException} if query string is blank
      */
     public Query createQuery(QueryRequestDTO request) {
         if (request.getSearch().equals("")) {
@@ -48,6 +49,7 @@ public class QueryService {
      *
      * @param id of query
      * @return found query
+     * @throws {QueryNotFoundException} if no query is found
      */
     public Query findQueryById(int id) {
         Query foundQuery = queryRepository.findById(id);
