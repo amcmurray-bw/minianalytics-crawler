@@ -10,7 +10,7 @@ import amcmurray.bw.exceptions.QueryExceptions;
 import amcmurray.bw.repositories.QueryRepository;
 import amcmurray.bw.twitterdomainobjects.Query;
 
-
+import org.apache.commons.lang3.StringUtils;
 @Service
 public class QueryService {
 
@@ -29,7 +29,7 @@ public class QueryService {
      * @throws {QuerySearchNullException} if query string is blank
      */
     public Query createQuery(QueryRequestDTO request) {
-        if (request.getSearch().equals("")) {
+        if (StringUtils.isBlank(request.getSearch())) {
             throw new QueryExceptions.QuerySearchNullException();
         } else {
             Query query = new Query(getNewQueryId(), request.getSearch());
@@ -54,11 +54,10 @@ public class QueryService {
     public Query findQueryById(int id) {
         Query foundQuery = queryRepository.findById(id);
 
-        if (foundQuery != null) {
-            return foundQuery;
-        } else {
+        if (foundQuery == null) {
             throw new QueryExceptions.QueryNotFoundException(id);
         }
+        return foundQuery;
     }
 
     public List<Query> getListAllQueries() {
