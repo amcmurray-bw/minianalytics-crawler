@@ -1,59 +1,58 @@
 package amcmurray.bw;
 
-import static org.mockito.Mockito.when;
-
-import java.sql.Date;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import amcmurray.bw.twitterdomainobjects.Mention;
 import amcmurray.bw.twitterdomainobjects.MentionDTO;
 import amcmurray.bw.twitterdomainobjects.MentionType;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class MentionPresenterTest {
 
-    @Mock
-    private MentionPresenter mentionPresenter;
+    private MentionPresenter mentionPresenter = new MentionPresenter();
+
+    private final Date testDate = Date.from(Instant.now());
 
     private Mention mention = new Mention(
             "123", 456, MentionType.TWITTER,
-            "mocktext", Date.from(Instant.now()),
+            "mocktext", testDate,
             "en", 0);
 
-    private final List<Mention> allMentions = Arrays.asList(mention, mention, mention, mention, mention);
+    private MentionDTO mentionDto = new MentionDTO(
+            "123", 456, MentionType.TWITTER,
+            "mocktext", ZonedDateTime.ofInstant(
+            testDate.toInstant(), ZoneId.of("UTC"))
+            .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z")),
+            "en", 0);
 
+    private final List<Mention> listOfMentions = Arrays.asList(mention, mention, mention, mention, mention);
+    private final List<MentionDTO> expectedListOfDTOs = Arrays.asList(mentionDto, mentionDto, mentionDto, mentionDto, mentionDto);
 
     @Test
     public void toDTOs_convertsMentionObjectToDTO() {
 
-        when(mentionPresenter.toDTOs(allMentions)).thenCallRealMethod();
+        List<MentionDTO> listOfMentionsToDTOs = mentionPresenter.toDTOs(listOfMentions);
 
-        List<MentionDTO> mentionDTOList = mentionPresenter.toDTOs(allMentions);
-
-        Assert.assertNotNull(mentionDTOList);
-        Assert.assertEquals(MentionDTO.class, mentionDTOList.get(0).getClass());
-
+        Assert.assertEquals(expectedListOfDTOs, listOfMentionsToDTOs);
     }
 
     @Test
     public void toDTOs_propertiesAreAsExpected() {
 
-        when(mentionPresenter.toDTOs(allMentions)).thenCallRealMethod();
+        List<MentionDTO> listOfMentionsToDTOs = mentionPresenter.toDTOs(listOfMentions);
 
-        List<MentionDTO> mentionDTOList = mentionPresenter.toDTOs(allMentions);
-
-        MentionDTO mentionDT0 = mentionDTOList.get(0);
+        MentionDTO mentionDT0 = listOfMentionsToDTOs.get(0);
 
         assert mention.getId().equals(mentionDT0.getId());
         assert mention.getQueryId() == (mentionDT0.getQueryId());
