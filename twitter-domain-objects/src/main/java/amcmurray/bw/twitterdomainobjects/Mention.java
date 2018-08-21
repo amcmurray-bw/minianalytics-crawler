@@ -1,6 +1,7 @@
 package amcmurray.bw.twitterdomainobjects;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,6 +28,26 @@ public class Mention {
         this.createdAt = createdAt;
         this.languageCode = languageCode;
         this.favouriteCount = favouriteCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Mention mention = (Mention) o;
+        return queryId == mention.queryId &&
+                favouriteCount == mention.favouriteCount &&
+                Objects.equals(id, mention.id) &&
+                mentionType == mention.mentionType &&
+                Objects.equals(text, mention.text) &&
+                Objects.equals(createdAt, mention.createdAt) &&
+                Objects.equals(languageCode, mention.languageCode);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, queryId, mentionType, text, createdAt, languageCode, favouriteCount);
     }
 
     public String getId() {
