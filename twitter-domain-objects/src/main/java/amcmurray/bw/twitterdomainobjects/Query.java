@@ -2,13 +2,16 @@ package amcmurray.bw.twitterdomainobjects;
 
 import java.util.Objects;
 
+import org.mongodb.morphia.annotations.Entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Entity("savedQueries")
 @Document(collection = "savedQueries")
 public final class Query {
 
     @Id
+    @org.mongodb.morphia.annotations.Id
     private int id;
     private String text;
 
