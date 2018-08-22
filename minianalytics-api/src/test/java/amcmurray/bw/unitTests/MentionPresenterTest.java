@@ -1,4 +1,4 @@
-package amcmurray.bw;
+package amcmurray.bw.unitTests;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import amcmurray.bw.MentionPresenter;
 import amcmurray.bw.twitterdomainobjects.Mention;
 import amcmurray.bw.twitterdomainobjects.MentionDTO;
 import amcmurray.bw.twitterdomainobjects.MentionType;

@@ -10,10 +10,13 @@ COPY target/minianalytics-api-0.1.0.jar $PROJECT_HOME/minianalytics-api-0.1.0.ja
 
 WORKDIR $PROJECT_HOME
 
+# Adding run script
+ADD docker/* /
+RUN chmod +x /run.sh
+
 # Adding a script to wait for mongo to load
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.3.0/wait /wait
 RUN chmod +x /wait
 
-#run wait script & application. Mongo address points to mongo docker-compose container
-CMD /wait && java -Dspring.data.mongodb.uri=mongodb://mongodb:27017 -Djava.security.egd=file:/dev/./urandom -jar ./minianalytics-api-0.1.0.jar
-
+#run script to start
+CMD /run.sh

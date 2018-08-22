@@ -1,4 +1,4 @@
-package amcmurray.bw.services;
+package amcmurray.bw.unitTests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -14,10 +14,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import amcmurray.bw.QueryRequestDTO;
 import amcmurray.bw.exceptions.QueryExceptions;
 import amcmurray.bw.repositories.QueryRepository;
+import amcmurray.bw.services.QueryService;
 import amcmurray.bw.twitterdomainobjects.Query;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueryServiceTest {
+
 
     @Mock
     private QueryRepository queryRepository;
@@ -31,6 +33,8 @@ public class QueryServiceTest {
 
     @Test
     public void createQuery_createsExpectedQuery() {
+
+
         //create a query with the same text as DTO, and a random ID.
         Query queryToQueryDTO = new Query(56789, testQueryDTO.getSearch());
 
