@@ -179,7 +179,7 @@ public class miniananalyticsApi_IT {
                 .body("exception",
                         equalTo(QueryExceptions.QuerySearchNullException.class.getName()));
     }
-    
+
     @Test
     public void viewMentionsOfQueryById_returnsValidMentions() {
 
