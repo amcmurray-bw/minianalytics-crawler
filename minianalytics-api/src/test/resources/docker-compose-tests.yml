@@ -3,6 +3,7 @@ version: "3"
 
 services:
   mongodbtest:
+    container_name: mongodbtest
     image: mongo
     ports:
       - 27017
