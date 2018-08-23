@@ -1,7 +1,6 @@
 package amcmurray.bw.unitTests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -19,8 +18,7 @@ import amcmurray.bw.twitterdomainobjects.Query;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueryServiceTest {
-
-
+    
     @Mock
     private QueryRepository queryRepository;
 
@@ -33,8 +31,6 @@ public class QueryServiceTest {
 
     @Test
     public void createQuery_createsExpectedQuery() {
-
-
         //create a query with the same text as DTO, and a random ID.
         Query queryToQueryDTO = new Query(56789, testQueryDTO.getSearch());
 
@@ -55,16 +51,14 @@ public class QueryServiceTest {
 
         //return null, eg query does not exist
         when(queryRepository.findById(13579)).thenReturn(null);
-
-        assertNull(queryService.findQueryById(13579));
+        queryService.findQueryById(13579);
     }
 
     @Test(expected = QueryExceptions.QuerySearchNullException.class)
     public void blankQueryDTOSearchField_throwsQuerySearchNullException() {
 
         QueryRequestDTO nullQuery = new QueryRequestDTO("");
-
-        assertNull(queryService.createQuery(nullQuery));
+        queryService.createQuery(nullQuery);
     }
 
 }
