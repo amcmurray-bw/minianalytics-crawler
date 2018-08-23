@@ -1,0 +1,11 @@
+install:
+  - mvn clean install -DskipTests
+  - mvn clean verify || cat /home/travis/build/amcmurray-bw/minianalytics/minianalytics-api/target/docker-compose-test-logs/mongodbtest.log && cat /home/travis/build/amcmurray-bw/minianalytics/minianalytics-api/target/docker-compose-test-logs/minianalyticsapitest.log
+
+language: java
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+

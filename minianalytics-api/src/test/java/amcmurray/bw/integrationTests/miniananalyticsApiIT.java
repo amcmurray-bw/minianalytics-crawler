@@ -221,7 +221,8 @@ public class miniananalyticsApiIT {
     }
 
     private void dropDB() {
-        datastore.getMongo().getDatabase(DATABASE_NAME).drop();
+        datastore.getDB().getCollection("savedQueries").drop();
+        datastore.getDB().getCollection("savedMentions").drop();
     }
 
     private void addMentionsToDB() {
