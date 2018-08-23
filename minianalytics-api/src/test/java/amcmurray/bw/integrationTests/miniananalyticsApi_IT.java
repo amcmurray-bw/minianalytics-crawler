@@ -3,6 +3,13 @@ package amcmurray.bw.integrationTests;
 import static io.restassured.RestAssured.with;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +29,8 @@ import com.palantir.docker.compose.connection.waiting.HealthChecks;
 
 import amcmurray.bw.QueryRequestDTO;
 import amcmurray.bw.exceptions.QueryExceptions;
+import amcmurray.bw.twitterdomainobjects.Mention;
+import amcmurray.bw.twitterdomainobjects.MentionType;
 import amcmurray.bw.twitterdomainobjects.Query;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -41,8 +50,18 @@ public class miniananalyticsApi_IT {
     private static final String DATABASE_NAME = "minianalytics";
     private static Datastore datastore;
 
-    private final Query query = new Query(0, "test search");
-    private final Query anotherQuery = new Query(1, "another test search");
+    private final Date testDate = Date.from(Instant.now());
+    private final String testDateMentionDTO = ZonedDateTime.ofInstant(testDate.toInstant(), ZoneId.of("UTC"))
+            .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z"));
+    private final Query query = new Query(0, "test query");
+    private final Query anotherQuery = new Query(1, "another search");
+
+    private final Mention mentionOne = new Mention("123abc", 0, MentionType.TWITTER,
+            "this is a mention of a test query", testDate, "en", 0);
+    private final Mention mentionTwo = new Mention("456def", 1, MentionType.TWITTER,
+            "this is a mention of another search", testDate, "en", 0);
+    private final Mention mentionThree = new Mention("789hij", 1, MentionType.TWITTER,
+            "this is a mention of another  search", testDate, "en", 0);
 
 
     @ClassRule
@@ -53,7 +72,6 @@ public class miniananalyticsApi_IT {
             .saveLogsTo("target/docker-compose-test-logs")
             .shutdownStrategy(ShutdownStrategy.GRACEFUL)
             .build();
-
 
     @BeforeClass
     public static void initialize() {
@@ -81,11 +99,12 @@ public class miniananalyticsApi_IT {
     @Before
     public void setup() {
         addQueriesToDB();
+        addMentionsToDB();
     }
 
     @After
     public void tearDown() {
-        removeQueriesFromDB();
+        dropDB();
     }
 
     @Test
@@ -160,7 +179,56 @@ public class miniananalyticsApi_IT {
                 .body("exception",
                         equalTo(QueryExceptions.QuerySearchNullException.class.getName()));
     }
+    
+    @Test
+    public void viewMentionsOfQueryById_returnsValidMentions() {
 
+        Response response = with()
+                .get(createURLWithPort("/mentions/") + query.getId());
+
+
+        response.then().assertThat()
+                .statusCode(200)
+                .body("id", hasSize(1))
+                .body("id[0]", equalTo(mentionOne.getId()))
+                .body("queryId[0]", equalTo(0))
+                .body("text[0]", equalTo(mentionOne.getText()))
+                .body("dateCreated[0]", equalTo(testDateMentionDTO))
+                .body("languageCode[0]", equalTo(mentionOne.getLanguageCode()))
+                .body("favouriteCount[0]", equalTo(mentionOne.getFavouriteCount()));
+    }
+
+    @Test
+    public void viewAllMentions_returnsValidMentions() {
+
+        Response response = with()
+                .get(createURLWithPort("/mentions"));
+
+        response.then().assertThat()
+                .statusCode(200)
+                .body("id", hasSize(3))
+                .body("id[0]", equalTo(mentionOne.getId()))
+                .body("queryId[0]", equalTo(0))
+                .body("text[0]", notNullValue())
+                .body("id[1]", equalTo(mentionTwo.getId()))
+                .body("queryId[1]", equalTo(1))
+                .body("text[1]", notNullValue())
+                .body("id[2]", equalTo(mentionThree.getId()))
+                .body("queryId[2]", equalTo(1))
+                .body("text[2]", notNullValue());
+    }
+
+    @Test
+    public void viewMentionsByNonexistentQueryById_throwsQueryNotFoundException() {
+
+        Response response = with()
+                .get(createURLWithPort("/mentions/-1"));
+
+        response.then().assertThat()
+                .statusCode(404)
+                .body("exception",
+                        equalTo(QueryExceptions.QueryNotFoundException.class.getName()));
+    }
 
     private String createURLWithPort(String uri) {
         return "http://localhost:" + API_EXTERNAL_PORT + uri;
@@ -171,8 +239,13 @@ public class miniananalyticsApi_IT {
         datastore.save(anotherQuery);
     }
 
-    private void removeQueriesFromDB() {
-        datastore.delete(query);
-        datastore.delete(anotherQuery);
+    private void dropDB() {
+        datastore.getMongo().getDatabase(DATABASE_NAME).drop();
+    }
+
+    private void addMentionsToDB() {
+        datastore.save(mentionOne);
+        datastore.save(mentionTwo);
+        datastore.save(mentionThree);
     }
 }
