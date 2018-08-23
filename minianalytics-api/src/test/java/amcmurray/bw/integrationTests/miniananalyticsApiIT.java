@@ -24,7 +24,6 @@ import com.mongodb.MongoClient;
 import com.palantir.docker.compose.DockerComposeRule;
 import com.palantir.docker.compose.configuration.ProjectName;
 import com.palantir.docker.compose.configuration.ShutdownStrategy;
-import com.palantir.docker.compose.connection.DockerPort;
 import com.palantir.docker.compose.connection.waiting.HealthChecks;
 
 import amcmurray.bw.QueryRequestDTO;
@@ -33,10 +32,9 @@ import amcmurray.bw.twitterdomainobjects.Mention;
 import amcmurray.bw.twitterdomainobjects.MentionType;
 import amcmurray.bw.twitterdomainobjects.Query;
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 
 @Category(IntegrationTest.class)
-public class miniananalyticsApi_IT {
+public class miniananalyticsApiIT {
 
     //fields for mongo
     private static final String MONGO_CONTAINER_NAME = "mongodbtest";
@@ -53,14 +51,14 @@ public class miniananalyticsApi_IT {
     private final Date testDate = Date.from(Instant.now());
     private final String testDateMentionDTO = ZonedDateTime.ofInstant(testDate.toInstant(), ZoneId.of("UTC"))
             .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z"));
-    private final Query query = new Query(0, "test query");
-    private final Query anotherQuery = new Query(1, "another search");
+    private final Query query1 = new Query(0, "test query1");
+    private final Query query2 = new Query(1, "another search");
 
-    private final Mention mentionOne = new Mention("123abc", 0, MentionType.TWITTER,
-            "this is a mention of a test query", testDate, "en", 0);
-    private final Mention mentionTwo = new Mention("456def", 1, MentionType.TWITTER,
+    private final Mention mention1 = new Mention("123abc", 0, MentionType.TWITTER,
+            "this is a mention of a test query1", testDate, "en", 0);
+    private final Mention mention2 = new Mention("456def", 1, MentionType.TWITTER,
             "this is a mention of another search", testDate, "en", 0);
-    private final Mention mentionThree = new Mention("789hij", 1, MentionType.TWITTER,
+    private final Mention mention3 = new Mention("789hij", 1, MentionType.TWITTER,
             "this is a mention of another  search", testDate, "en", 0);
 
 
@@ -76,23 +74,21 @@ public class miniananalyticsApi_IT {
     @BeforeClass
     public static void initialize() {
         //getting external port for API service
-        DockerPort apiService = docker.containers()
+        API_EXTERNAL_PORT = docker.containers()
                 .container(API_CONTAINER)
-                .port(API_INTERNAL_PORT);
-        API_EXTERNAL_PORT = apiService.getExternalPort();
+                .port(API_INTERNAL_PORT).getExternalPort();
 
-        //getting external port for Mongo
-        DockerPort mongoService = docker.containers()
+        MONGO_EXTERNAL_PORT = docker.containers()
                 .container(MONGO_CONTAINER_NAME)
-                .port(MONGO_INTERNAL_PORT);
-
-        MONGO_EXTERNAL_PORT = mongoService.getExternalPort();
+                .port(MONGO_INTERNAL_PORT).getExternalPort();
 
         //using morphia to create new datastore
         final Morphia morphia = new Morphia();
         morphia.mapPackage("amcmurray.bw.twitterdomainobjects");
+
         //datastore uses mongo instance
-        datastore = morphia.createDatastore(new MongoClient("localhost", MONGO_EXTERNAL_PORT), DATABASE_NAME);
+        datastore = morphia.createDatastore(
+                new MongoClient("localhost", MONGO_EXTERNAL_PORT), DATABASE_NAME);
         datastore.ensureIndexes();
     }
 
@@ -110,22 +106,22 @@ public class miniananalyticsApi_IT {
     @Test
     public void viewQueryById_getsExpectedQuery() {
 
-        Response response = with()
-                .get(createURLWithPort("/queries/0"));
+        with()
+                .get(createURLWithPort("/queries/0"))
 
-        response.then().assertThat()
+                .then().assertThat()
                 .statusCode(200)
-                .body("id", equalTo(query.getId()))
-                .body("text", equalTo(query.getText()));
+                .body("id", equalTo(query1.getId()))
+                .body("text", equalTo(query1.getText()));
     }
 
     @Test
     public void viewNonexistentQueryById_throwsQueryNotFoundException() {
 
-        Response response = with()
-                .get(createURLWithPort("/queries/-1"));
+        with()
+                .get(createURLWithPort("/queries/-1"))
 
-        response.then().assertThat()
+                .then().assertThat()
                 .statusCode(404)
                 .body("exception",
                         equalTo(QueryExceptions.QueryNotFoundException.class.getName()));
@@ -134,16 +130,16 @@ public class miniananalyticsApi_IT {
     @Test
     public void viewMultipleQueries_returnsMultiple() {
 
-        Response response = with()
-                .get(createURLWithPort("/queries"));
+        with()
+                .get(createURLWithPort("/queries"))
 
-        response.then().assertThat()
+                .then().assertThat()
                 .statusCode(200)
                 .body("id", hasSize(2))
-                .body("id[0]", equalTo(query.getId()))
-                .body("text[0]", equalTo(query.getText()))
-                .body("id[1]", equalTo(anotherQuery.getId()))
-                .body("text[1]", equalTo(anotherQuery.getText()));
+                .body("id[0]", equalTo(query1.getId()))
+                .body("text[0]", equalTo(query1.getText()))
+                .body("id[1]", equalTo(query2.getId()))
+                .body("text[1]", equalTo(query2.getText()));
     }
 
     @Test
@@ -151,15 +147,15 @@ public class miniananalyticsApi_IT {
 
         QueryRequestDTO queryRequestDTO = new QueryRequestDTO("new search");
 
-        Response response = with()
+        with()
                 .contentType(ContentType.JSON)
                 .body(queryRequestDTO)
                 .when()
-                .post((createURLWithPort("/query")));
+                .post((createURLWithPort("/query")))
 
-        response.then().assertThat()
+                .then().assertThat()
                 .statusCode(200)
-                .body("id", equalTo(anotherQuery.getId() + 1))
+                .body("id", equalTo(query2.getId() + 1))
                 .body("text", equalTo(queryRequestDTO.getSearch()));
     }
 
@@ -168,13 +164,13 @@ public class miniananalyticsApi_IT {
 
         QueryRequestDTO queryRequestDTO = new QueryRequestDTO("");
 
-        Response response = with()
+        with()
                 .contentType(ContentType.JSON)
                 .body(queryRequestDTO)
                 .when()
-                .post((createURLWithPort("/query")));
+                .post((createURLWithPort("/query")))
 
-        response.then().assertThat()
+                .then().assertThat()
                 .statusCode(400)
                 .body("exception",
                         equalTo(QueryExceptions.QuerySearchNullException.class.getName()));
@@ -183,37 +179,36 @@ public class miniananalyticsApi_IT {
     @Test
     public void viewMentionsOfQueryById_returnsValidMentions() {
 
-        Response response = with()
-                .get(createURLWithPort("/mentions/") + query.getId());
+        with()
+                .get(createURLWithPort("/mentions/") + query1.getId())
 
-
-        response.then().assertThat()
+                .then().assertThat()
                 .statusCode(200)
                 .body("id", hasSize(1))
-                .body("id[0]", equalTo(mentionOne.getId()))
+                .body("id[0]", equalTo(mention1.getId()))
                 .body("queryId[0]", equalTo(0))
-                .body("text[0]", equalTo(mentionOne.getText()))
+                .body("text[0]", equalTo(mention1.getText()))
                 .body("dateCreated[0]", equalTo(testDateMentionDTO))
-                .body("languageCode[0]", equalTo(mentionOne.getLanguageCode()))
-                .body("favouriteCount[0]", equalTo(mentionOne.getFavouriteCount()));
+                .body("languageCode[0]", equalTo(mention1.getLanguageCode()))
+                .body("favouriteCount[0]", equalTo(mention1.getFavouriteCount()));
     }
 
     @Test
     public void viewAllMentions_returnsValidMentions() {
 
-        Response response = with()
-                .get(createURLWithPort("/mentions"));
+        with()
+                .get(createURLWithPort("/mentions"))
 
-        response.then().assertThat()
+                .then().assertThat()
                 .statusCode(200)
                 .body("id", hasSize(3))
-                .body("id[0]", equalTo(mentionOne.getId()))
+                .body("id[0]", equalTo(mention1.getId()))
                 .body("queryId[0]", equalTo(0))
                 .body("text[0]", notNullValue())
-                .body("id[1]", equalTo(mentionTwo.getId()))
+                .body("id[1]", equalTo(mention2.getId()))
                 .body("queryId[1]", equalTo(1))
                 .body("text[1]", notNullValue())
-                .body("id[2]", equalTo(mentionThree.getId()))
+                .body("id[2]", equalTo(mention3.getId()))
                 .body("queryId[2]", equalTo(1))
                 .body("text[2]", notNullValue());
     }
@@ -221,10 +216,10 @@ public class miniananalyticsApi_IT {
     @Test
     public void viewMentionsByNonexistentQueryById_throwsQueryNotFoundException() {
 
-        Response response = with()
-                .get(createURLWithPort("/mentions/-1"));
+        with()
+                .get(createURLWithPort("/mentions/-1"))
 
-        response.then().assertThat()
+                .then().assertThat()
                 .statusCode(404)
                 .body("exception",
                         equalTo(QueryExceptions.QueryNotFoundException.class.getName()));
@@ -235,8 +230,8 @@ public class miniananalyticsApi_IT {
     }
 
     private void addQueriesToDB() {
-        datastore.save(query);
-        datastore.save(anotherQuery);
+        datastore.save(query1);
+        datastore.save(query2);
     }
 
     private void dropDB() {
@@ -244,8 +239,8 @@ public class miniananalyticsApi_IT {
     }
 
     private void addMentionsToDB() {
-        datastore.save(mentionOne);
-        datastore.save(mentionTwo);
-        datastore.save(mentionThree);
+        datastore.save(mention1);
+        datastore.save(mention2);
+        datastore.save(mention3);
     }
 }

@@ -18,7 +18,7 @@ import amcmurray.bw.twitterdomainobjects.Query;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueryServiceTest {
-    
+
     @Mock
     private QueryRepository queryRepository;
 
