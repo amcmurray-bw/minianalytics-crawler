@@ -11,6 +11,9 @@ services:
     hostname: minianalyticsapi
     environment:
       WAIT_HOSTS: mongodb:27017
+      JAVA_OPTS: >
+       -Dspring.data.mongodb.uri=mongodb://mongodb:27017
+       -Djava.security.egd=file:/dev/./urandom
 
   minianalyticscrawler:
     build: twitter-crawler/.

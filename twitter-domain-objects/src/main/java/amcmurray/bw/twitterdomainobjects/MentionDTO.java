@@ -1,7 +1,8 @@
 package amcmurray.bw.twitterdomainobjects;
 
-public class MentionDTO {
+import java.util.Objects;
 
+public class MentionDTO {
 
     private String id;
     private int queryId;
@@ -21,6 +22,26 @@ public class MentionDTO {
         this.text = text;
         this.languageCode = languageCode;
         this.favouriteCount = favouriteCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MentionDTO that = (MentionDTO) o;
+        return queryId == that.queryId &&
+                favouriteCount == that.favouriteCount &&
+                Objects.equals(id, that.id) &&
+                mentionType == that.mentionType &&
+                Objects.equals(text, that.text) &&
+                Objects.equals(dateCreated, that.dateCreated) &&
+                Objects.equals(languageCode, that.languageCode);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, queryId, mentionType, text, dateCreated, languageCode, favouriteCount);
     }
 
     public String getDateCreated() {

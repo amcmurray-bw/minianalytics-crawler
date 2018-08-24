@@ -1,0 +1,27 @@
+
+version: "3"
+
+services:
+  mongodbtest:
+    container_name: mongodbtest
+    image: mongo
+    ports:
+      - 27017
+
+  minianalyticsapitest:
+    build: ../../../.
+    restart: always
+    container_name: minianalyticsapitest
+    ports:
+      - 8081
+    working_dir: /opt/app
+    hostname: minianalyticsapitest
+    environment:
+      WAIT_HOSTS: mongodbtest:27017
+      JAVA_OPTS: >
+       -Dspring.data.mongodb.uri=mongodb://mongodbtest:27017
+       -Djava.security.egd=file:/dev/./urandom
+    depends_on:
+       - mongodbtest
+
+
