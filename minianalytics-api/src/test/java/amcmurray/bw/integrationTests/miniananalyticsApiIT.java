@@ -105,9 +105,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewQueryById_getsExpectedQuery() {
-
-        with()
-                .get(createURLWithPort("/queries/0"))
+        with().get(createURLWithPort("/queries/0"))
 
                 .then().assertThat()
                 .statusCode(200)
@@ -117,9 +115,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewNonexistentQueryById_throwsQueryNotFoundException() {
-
-        with()
-                .get(createURLWithPort("/queries/-1"))
+        with().get(createURLWithPort("/queries/-1"))
 
                 .then().assertThat()
                 .statusCode(404)
@@ -129,9 +125,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewMultipleQueries_returnsMultiple() {
-
-        with()
-                .get(createURLWithPort("/queries"))
+        with().get(createURLWithPort("/queries"))
 
                 .then().assertThat()
                 .statusCode(200)
@@ -144,11 +138,9 @@ public class miniananalyticsApiIT {
 
     @Test
     public void addNewQuery_returnsExpectedQuery() {
-
         QueryRequestDTO queryRequestDTO = new QueryRequestDTO("new search");
 
-        with()
-                .contentType(ContentType.JSON)
+        with().contentType(ContentType.JSON)
                 .body(queryRequestDTO)
                 .when()
                 .post((createURLWithPort("/query")))
@@ -161,11 +153,9 @@ public class miniananalyticsApiIT {
 
     @Test
     public void addNewQueryWithBlankSearch_throwsQuerySearchNullException() {
-
         QueryRequestDTO queryRequestDTO = new QueryRequestDTO("");
 
-        with()
-                .contentType(ContentType.JSON)
+        with().contentType(ContentType.JSON)
                 .body(queryRequestDTO)
                 .when()
                 .post((createURLWithPort("/query")))
@@ -178,9 +168,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewMentionsOfQueryById_returnsValidMentions() {
-
-        with()
-                .get(createURLWithPort("/mentions/") + query1.getId())
+        with().get(createURLWithPort("/mentions/") + query1.getId())
 
                 .then().assertThat()
                 .statusCode(200)
@@ -195,9 +183,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewAllMentions_returnsValidMentions() {
-
-        with()
-                .get(createURLWithPort("/mentions"))
+        with().get(createURLWithPort("/mentions"))
 
                 .then().assertThat()
                 .statusCode(200)
@@ -215,9 +201,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewMentionsByNonexistentQueryById_throwsQueryNotFoundException() {
-
-        with()
-                .get(createURLWithPort("/mentions/-1"))
+        with().get(createURLWithPort("/mentions/-1"))
 
                 .then().assertThat()
                 .statusCode(404)

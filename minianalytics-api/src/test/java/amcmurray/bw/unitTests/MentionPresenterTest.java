@@ -1,5 +1,7 @@
 package amcmurray.bw.unitTests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -8,7 +10,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,17 +26,26 @@ public class MentionPresenterTest {
 
     private final Date testDate = Date.from(Instant.now());
 
+    private final String expectedId = "123";
+    private final int expectedQueryId = 456;
+    private final MentionType expectedMentionType = MentionType.TWITTER;
+    private final String expectedText = "mocktext";
+    private final String expectedTestDate = ZonedDateTime.ofInstant(
+            testDate.toInstant(), ZoneId.of("UTC"))
+            .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z"));
+    private final String expectedLanguage = "en";
+    private final int expectedFavourites = 0;
+
+
     private Mention mention = new Mention(
-            "123", 456, MentionType.TWITTER,
-            "mocktext", testDate,
-            "en", 0);
+            expectedId, expectedQueryId, expectedMentionType,
+            expectedText, testDate,
+            expectedLanguage, expectedFavourites);
 
     private MentionDTO mentionDto = new MentionDTO(
-            "123", 456, MentionType.TWITTER,
-            "mocktext", ZonedDateTime.ofInstant(
-            testDate.toInstant(), ZoneId.of("UTC"))
-            .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z")),
-            "en", 0);
+            expectedId, expectedQueryId, expectedMentionType,
+            expectedText, expectedTestDate,
+            expectedLanguage, expectedFavourites);
 
     private final List<Mention> listOfMentions = Arrays.asList(mention, mention, mention, mention, mention);
     private final List<MentionDTO> expectedListOfDTOs = Arrays.asList(mentionDto, mentionDto, mentionDto, mentionDto, mentionDto);
@@ -45,7 +55,7 @@ public class MentionPresenterTest {
 
         List<MentionDTO> listOfMentionsToDTOs = mentionPresenter.toDTOs(listOfMentions);
 
-        Assert.assertEquals(expectedListOfDTOs, listOfMentionsToDTOs);
+        assertEquals(expectedListOfDTOs, listOfMentionsToDTOs);
     }
 
     @Test
@@ -55,16 +65,12 @@ public class MentionPresenterTest {
 
         MentionDTO mentionDT0 = listOfMentionsToDTOs.get(0);
 
-        assert mention.getId().equals(mentionDT0.getId());
-        assert mention.getQueryId() == (mentionDT0.getQueryId());
-        assert mention.getMentionType().equals(mentionDT0.getMentionType());
-        assert mention.getText().equals(mentionDT0.getText());
-        assert mention.getLanguageCode().equals(mentionDT0.getLanguageCode());
-        assert mention.getFavouriteCount() == (mentionDT0.getFavouriteCount());
-
-        assert ZonedDateTime.ofInstant(
-                mention.getCreatedAt().toInstant(), ZoneId.of("UTC"))
-                .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z"))
-                .equals(mentionDT0.getDateCreated());
+        assertEquals(expectedId, (mentionDT0.getId()));
+        assertEquals(expectedQueryId, mentionDT0.getQueryId());
+        assertEquals(expectedMentionType, mentionDT0.getMentionType());
+        assertEquals(expectedText, mentionDT0.getText());
+        assertEquals(expectedTestDate, mentionDT0.getDateCreated());
+        assertEquals(expectedLanguage, mentionDT0.getLanguageCode());
+        assertEquals(expectedFavourites, mentionDT0.getFavouriteCount());
     }
 }
