@@ -36,12 +36,12 @@ import io.restassured.http.ContentType;
 @Category(IntegrationTest.class)
 public class miniananalyticsApiIT {
 
-    //fields for mongo
+
     private static final String MONGO_CONTAINER_NAME = "mongodbtest";
     private static final int MONGO_INTERNAL_PORT = 27017;
     private static int MONGO_EXTERNAL_PORT;
 
-    private static final String API_CONTAINER = "minianalyticsapitest";
+    private static final String API_CONTAINER_NAME = "minianalyticsapitest";
     private static final int API_INTERNAL_PORT = 8081;
     private static int API_EXTERNAL_PORT;
 
@@ -49,13 +49,15 @@ public class miniananalyticsApiIT {
     private static Datastore datastore;
 
     private final Date testDate = Date.from(Instant.now());
-    private final String testDateMentionDTO = ZonedDateTime.ofInstant(testDate.toInstant(), ZoneId.of("UTC"))
+    private final String testDateMentionDTO = ZonedDateTime
+            .ofInstant(testDate.toInstant(), ZoneId.of("UTC"))
             .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z"));
-    private final Query query1 = new Query(0, "test query1");
+
+    private final Query query1 = new Query(0, "test query");
     private final Query query2 = new Query(1, "another search");
 
     private final Mention mention1 = new Mention("123abc", 0, MentionType.TWITTER,
-            "this is a mention of a test query1", testDate, "en", 0);
+            "this is a mention of a test query", testDate, "en", 0);
     private final Mention mention2 = new Mention("456def", 1, MentionType.TWITTER,
             "this is a mention of another search", testDate, "en", 0);
     private final Mention mention3 = new Mention("789hij", 1, MentionType.TWITTER,
@@ -66,7 +68,7 @@ public class miniananalyticsApiIT {
     public static DockerComposeRule docker = DockerComposeRule.builder()
             .file("src/test/resources/docker-compose-tests.yml")
             .projectName(ProjectName.random())
-            .waitingForService(API_CONTAINER, HealthChecks.toHaveAllPortsOpen())
+            .waitingForService(API_CONTAINER_NAME, HealthChecks.toHaveAllPortsOpen())
             .saveLogsTo("target/docker-compose-test-logs")
             .shutdownStrategy(ShutdownStrategy.GRACEFUL)
             .build();
@@ -75,7 +77,7 @@ public class miniananalyticsApiIT {
     public static void initialize() {
         //getting external port for API service
         API_EXTERNAL_PORT = docker.containers()
-                .container(API_CONTAINER)
+                .container(API_CONTAINER_NAME)
                 .port(API_INTERNAL_PORT).getExternalPort();
 
         MONGO_EXTERNAL_PORT = docker.containers()

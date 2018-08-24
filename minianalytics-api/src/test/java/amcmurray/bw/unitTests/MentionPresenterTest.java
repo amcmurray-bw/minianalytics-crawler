@@ -37,18 +37,20 @@ public class MentionPresenterTest {
     private final int expectedFavourites = 0;
 
 
-    private Mention mention = new Mention(
+    private final Mention mention = new Mention(
             expectedId, expectedQueryId, expectedMentionType,
             expectedText, testDate,
             expectedLanguage, expectedFavourites);
 
-    private MentionDTO mentionDto = new MentionDTO(
+    private final MentionDTO mentionDto = new MentionDTO(
             expectedId, expectedQueryId, expectedMentionType,
             expectedText, expectedTestDate,
             expectedLanguage, expectedFavourites);
 
-    private final List<Mention> listOfMentions = Arrays.asList(mention, mention, mention, mention, mention);
-    private final List<MentionDTO> expectedListOfDTOs = Arrays.asList(mentionDto, mentionDto, mentionDto, mentionDto, mentionDto);
+    private final List<Mention> listOfMentions = Arrays.asList(mention,
+            mention, mention, mention, mention);
+    private final List<MentionDTO> expectedListOfDTOs = Arrays.asList(mentionDto,
+            mentionDto, mentionDto, mentionDto, mentionDto);
 
     @Test
     public void toDTOs_convertsMentionObjectToDTO() {
@@ -58,19 +60,4 @@ public class MentionPresenterTest {
         assertEquals(expectedListOfDTOs, listOfMentionsToDTOs);
     }
 
-    @Test
-    public void toDTOs_propertiesAreAsExpected() {
-
-        List<MentionDTO> listOfMentionsToDTOs = mentionPresenter.toDTOs(listOfMentions);
-
-        MentionDTO mentionDT0 = listOfMentionsToDTOs.get(0);
-
-        assertEquals(expectedId, (mentionDT0.getId()));
-        assertEquals(expectedQueryId, mentionDT0.getQueryId());
-        assertEquals(expectedMentionType, mentionDT0.getMentionType());
-        assertEquals(expectedText, mentionDT0.getText());
-        assertEquals(expectedTestDate, mentionDT0.getDateCreated());
-        assertEquals(expectedLanguage, mentionDT0.getLanguageCode());
-        assertEquals(expectedFavourites, mentionDT0.getFavouriteCount());
-    }
 }

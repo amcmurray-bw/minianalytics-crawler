@@ -32,11 +32,11 @@ public class QueryServiceTest {
     @Test
     public void createQuery_createsExpectedQuery() {
         //create a query with the same text as DTO, and a random ID.
-        Query queryToQueryDTO = new Query(56789, testQueryDTO.getSearch());
+        Query expectedQuery = new Query(56789, testQueryDTO.getSearch());
 
-        when(queryRepository.save(any(Query.class))).thenReturn(queryToQueryDTO);
+        when(queryRepository.save(any(Query.class))).thenReturn(expectedQuery);
 
-        assertEquals(queryToQueryDTO, queryService.createQuery(testQueryDTO));
+        assertEquals(expectedQuery, queryService.createQuery(testQueryDTO));
     }
 
     @Test
