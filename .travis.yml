@@ -1,11 +1,15 @@
-install:
-  - mvn clean install -DskipTests
-  - mvn clean verify || cat /home/travis/build/amcmurray-bw/minianalytics/minianalytics-api/target/docker-compose-test-logs/mongodbtest.log && cat /home/travis/build/amcmurray-bw/minianalytics/minianalytics-api/target/docker-compose-test-logs/minianalyticsapitest.log
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
+
+install: true
+
+script:
+  - mvn clean verify
 
 language: java
 
-addons:
-  apt:
-    packages:
-      - docker-ce
+
 
