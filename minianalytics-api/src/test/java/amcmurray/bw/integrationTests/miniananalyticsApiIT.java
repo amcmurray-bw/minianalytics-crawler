@@ -61,7 +61,7 @@ public class miniananalyticsApiIT {
     private final Mention mention2 = new Mention("456def", 1, MentionType.TWITTER,
             "this is a mention of another search", testDate, "en", 0);
     private final Mention mention3 = new Mention("789hij", 1, MentionType.TWITTER,
-            "this is a mention of another  search", testDate, "en", 0);
+            "eine test Suche", testDate, "de", 0);
 
 
     @ClassRule
@@ -182,6 +182,20 @@ public class miniananalyticsApiIT {
                 .body("languageCode[0]", equalTo(mention1.getLanguageCode()))
                 .body("favouriteCount[0]", equalTo(mention1.getFavouriteCount()));
     }
+
+
+    @Test
+    public void viewMentionsOfQueryByIdWithLanguageCodeFilter_returnsValidMentions() {
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=de")
+
+                .then().assertThat()
+                .statusCode(200)
+                .body("id", hasSize(1))
+                .body("id[0]", equalTo(mention3.getId()))
+                .body("queryId[0]", equalTo(query2.getId()))
+                .body("languageCode[0]", equalTo(mention3.getLanguageCode()));
+    }
+
 
     @Test
     public void viewAllMentions_returnsValidMentions() {

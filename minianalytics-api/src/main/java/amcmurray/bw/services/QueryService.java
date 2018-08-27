@@ -2,6 +2,7 @@ package amcmurray.bw.services;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,6 @@ import amcmurray.bw.exceptions.QueryExceptions;
 import amcmurray.bw.repositories.QueryRepository;
 import amcmurray.bw.twitterdomainobjects.Query;
 
-import org.apache.commons.lang3.StringUtils;
 @Service
 public class QueryService {
 

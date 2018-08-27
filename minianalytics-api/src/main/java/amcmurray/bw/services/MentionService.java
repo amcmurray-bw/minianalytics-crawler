@@ -2,9 +2,11 @@ package amcmurray.bw.services;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import amcmurray.bw.Filter;
 import amcmurray.bw.repositories.MentionRepository;
 import amcmurray.bw.twitterdomainobjects.Mention;
 
@@ -26,10 +28,12 @@ public class MentionService {
      * @return list of mentions
      * @throws {QueryNotFoundException} if query not found
      */
-    public List<Mention> findAllMentionsOfQuery(int queryId) {
-
+    public List<Mention> findAllMentionsOfQueryWithFilters(int queryId, Filter filter) {
         queryService.findQueryById(queryId);
 
+        if (StringUtils.isNotBlank(filter.getLanguageCode())) {
+            return mentionRepository.findAllByQueryIdAndLanguageCode(queryId, filter.getLanguageCode());
+        }
         return mentionRepository.findAllByQueryId(queryId);
     }
 

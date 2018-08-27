@@ -9,4 +9,5 @@ import amcmurray.bw.twitterdomainobjects.Mention;
 public interface MentionRepository extends MongoRepository<Mention, Integer> {
 
     List<Mention> findAllByQueryId(int queryId);
+    List<Mention> findAllByQueryIdAndLanguageCode(int queryId, String languageCode);
 }
