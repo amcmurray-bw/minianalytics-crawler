@@ -33,7 +33,6 @@ public class MentionService {
     public void saveNewMentions(Query query) {
 
         SearchParameters params = new SearchParameters(query.getText());
-        params.lang("en"); //english for now
         SearchResults rawSearch = twitter.searchOperations().search(params);
 
         for (Tweet tweet : rawSearch.getTweets()) {

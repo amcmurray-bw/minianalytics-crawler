@@ -27,7 +27,7 @@ public class QueryController {
     /**
      * Create a new query.
      */
-    @PostMapping("/query")
+    @PostMapping("/queries")
     public Query addQuery(@RequestBody QueryRequestDTO request) {
         return queryService.createQuery(request);
     }

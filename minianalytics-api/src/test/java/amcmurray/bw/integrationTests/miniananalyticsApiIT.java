@@ -145,7 +145,7 @@ public class miniananalyticsApiIT {
         with().contentType(ContentType.JSON)
                 .body(queryRequestDTO)
                 .when()
-                .post((createURLWithPort("/query")))
+                .post((createURLWithPort("/queries")))
 
                 .then().assertThat()
                 .statusCode(200)
@@ -160,7 +160,7 @@ public class miniananalyticsApiIT {
         with().contentType(ContentType.JSON)
                 .body(queryRequestDTO)
                 .when()
-                .post((createURLWithPort("/query")))
+                .post((createURLWithPort("/queries")))
 
                 .then().assertThat()
                 .statusCode(400)
