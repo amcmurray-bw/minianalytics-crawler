@@ -2,6 +2,7 @@ package amcmurray.bw.twittercrawler;
 
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.twitter.api.SearchParameters;
 import org.springframework.social.twitter.api.SearchResults;
@@ -33,7 +34,15 @@ public class MentionService {
     public void saveNewMentions(Query query) {
 
         SearchParameters params = new SearchParameters(query.getText());
+
+        //if query has a specified language, set to that
+        if (StringUtils.isNotBlank(query.getLanguage())) {
+            params.lang(query.getLanguage());
+        }
+        params.count(10);
+
         SearchResults rawSearch = twitter.searchOperations().search(params);
+
 
         for (Tweet tweet : rawSearch.getTweets()) {
             Mention mention = new Mention(UUID.randomUUID().toString(),

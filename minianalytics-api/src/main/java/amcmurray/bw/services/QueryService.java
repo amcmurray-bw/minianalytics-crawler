@@ -32,7 +32,7 @@ public class QueryService {
         if (StringUtils.isBlank(request.getSearch())) {
             throw new QueryExceptions.QuerySearchNullException();
         } else {
-            Query query = new Query(getNewQueryId(), request.getSearch());
+            Query query = new Query(getNewQueryId(), request.getSearch(), request.getLanguage());
             return queryRepository.save(query);
         }
     }

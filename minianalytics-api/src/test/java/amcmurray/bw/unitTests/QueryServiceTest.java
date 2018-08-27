@@ -25,14 +25,14 @@ public class QueryServiceTest {
     @InjectMocks
     private QueryService queryService;
 
-    private final QueryRequestDTO testQueryDTO = new QueryRequestDTO("test");
-    private final Query testQuery = new Query(12345, "test");
+    private final QueryRequestDTO testQueryDTO = new QueryRequestDTO("test", "en");
+    private final Query testQuery = new Query(12345, "test", "en");
 
 
     @Test
     public void createQuery_createsExpectedQuery() {
         //create a query with the same text as DTO, and a random ID.
-        Query expectedQuery = new Query(56789, testQueryDTO.getSearch());
+        Query expectedQuery = new Query(56789, testQueryDTO.getSearch(), "en");
 
         when(queryRepository.save(any(Query.class))).thenReturn(expectedQuery);
 
@@ -57,7 +57,7 @@ public class QueryServiceTest {
     @Test(expected = QueryExceptions.QuerySearchNullException.class)
     public void blankQueryDTOSearchField_throwsQuerySearchNullException() {
 
-        QueryRequestDTO nullQuery = new QueryRequestDTO("");
+        QueryRequestDTO nullQuery = new QueryRequestDTO("", "en");
         queryService.createQuery(nullQuery);
     }
 

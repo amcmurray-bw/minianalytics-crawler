@@ -53,8 +53,8 @@ public class miniananalyticsApiIT {
             .ofInstant(testDate.toInstant(), ZoneId.of("UTC"))
             .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z"));
 
-    private final Query query1 = new Query(0, "test query");
-    private final Query query2 = new Query(1, "another search");
+    private final Query query1 = new Query(0, "test query", "en");
+    private final Query query2 = new Query(1, "another search", "");
 
     private final Mention mention1 = new Mention("123abc", 0, MentionType.TWITTER,
             "this is a mention of a test query", testDate, "en", 0);
@@ -140,7 +140,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void addNewQuery_returnsExpectedQuery() {
-        QueryRequestDTO queryRequestDTO = new QueryRequestDTO("new search");
+        QueryRequestDTO queryRequestDTO = new QueryRequestDTO("new search", "en");
 
         with().contentType(ContentType.JSON)
                 .body(queryRequestDTO)
@@ -155,7 +155,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void addNewQueryWithBlankSearch_throwsQuerySearchNullException() {
-        QueryRequestDTO queryRequestDTO = new QueryRequestDTO("");
+        QueryRequestDTO queryRequestDTO = new QueryRequestDTO("", "en");
 
         with().contentType(ContentType.JSON)
                 .body(queryRequestDTO)
