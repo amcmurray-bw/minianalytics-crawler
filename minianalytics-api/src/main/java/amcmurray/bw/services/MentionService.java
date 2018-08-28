@@ -1,5 +1,6 @@
 package amcmurray.bw.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,19 +26,17 @@ public class MentionService {
     /**
      * If a query is returned, find all mentions of the queryId
      *
+     * @param filter filter object for endpoints
      * @return list of mentions
      * @throws {QueryNotFoundException} if query not found
      */
     public List<Mention> findAllMentionsOfQueryWithFilters(int queryId, Filter filter) {
         queryService.findQueryById(queryId);
 
-        if (StringUtils.isNotBlank(filter.getLanguageCode())) {
-            return mentionRepository.findAllByQueryIdAndLanguageCode(queryId, filter.getLanguageCode());
-        }
-        return mentionRepository.findAllByQueryId(queryId);
+        return mentionRepository.findMentionsOfQueryWithFilters(queryId, filter);
     }
 
     public List<Mention> getAllMentions() {
-        return mentionRepository.findAll();
+        return mentionRepository.findAllMentions();
     }
 }

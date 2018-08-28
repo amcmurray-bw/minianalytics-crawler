@@ -32,7 +32,7 @@ public class MentionPresenterTest {
     private final String expectedText = "mocktext";
     private final String expectedTestDate = ZonedDateTime.ofInstant(
             testDate.toInstant(), ZoneId.of("UTC"))
-            .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z"));
+            .format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss z Z"));
     private final String expectedLanguage = "en";
     private final int expectedFavourites = 0;
 

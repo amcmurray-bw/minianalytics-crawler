@@ -5,7 +5,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 
-import java.time.Instant;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +37,6 @@ import io.restassured.http.ContentType;
 @Category(IntegrationTest.class)
 public class miniananalyticsApiIT {
 
-
     private static final String MONGO_CONTAINER_NAME = "mongodbtest";
     private static final int MONGO_INTERNAL_PORT = 27017;
     private static int MONGO_EXTERNAL_PORT;
@@ -48,21 +48,23 @@ public class miniananalyticsApiIT {
     private static final String DATABASE_NAME = "minianalytics";
     private static Datastore datastore;
 
-    private final Date testDate = Date.from(Instant.now());
+    private final Date testDate1 = Timestamp.valueOf(LocalDateTime.parse("2018.08.31.18.30.00",
+            DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss")));
+    private final Date testDate2 = Timestamp.valueOf(LocalDateTime.parse("2018.08.31.13.45.00",
+            DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss")));
     private final String testDateMentionDTO = ZonedDateTime
-            .ofInstant(testDate.toInstant(), ZoneId.of("UTC"))
-            .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z"));
+            .ofInstant(testDate1.toInstant(), ZoneId.of("UTC"))
+            .format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss z Z"));
 
     private final Query query1 = new Query(0, "test query", "en");
     private final Query query2 = new Query(1, "another search", "");
 
     private final Mention mention1 = new Mention("123abc", 0, MentionType.TWITTER,
-            "this is a mention of a test query", testDate, "en", 0);
+            "this is a mention of a test query", testDate1, "en", 0);
     private final Mention mention2 = new Mention("456def", 1, MentionType.TWITTER,
-            "this is a mention of another search", testDate, "en", 0);
+            "this is a mention of another search", testDate1, "en", 0);
     private final Mention mention3 = new Mention("789hij", 1, MentionType.TWITTER,
-            "eine test Suche", testDate, "de", 0);
-
+            "eine test Suche", testDate2, "de", 0);
 
     @ClassRule
     public static DockerComposeRule docker = DockerComposeRule.builder()
@@ -108,7 +110,6 @@ public class miniananalyticsApiIT {
     @Test
     public void viewQueryById_getsExpectedQuery() {
         with().get(createURLWithPort("/queries/0"))
-
                 .then().assertThat()
                 .statusCode(200)
                 .body("id", equalTo(query1.getId()))
@@ -183,7 +184,6 @@ public class miniananalyticsApiIT {
                 .body("favouriteCount[0]", equalTo(mention1.getFavouriteCount()));
     }
 
-
     @Test
     public void viewMentionsOfQueryByIdWithLanguageCodeFilter_returnsValidMentions() {
         with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=de")
@@ -196,6 +196,77 @@ public class miniananalyticsApiIT {
                 .body("languageCode[0]", equalTo(mention3.getLanguageCode()));
     }
 
+    @Test
+    public void viewMentionsOfQueryByIdWithDateBefore_returnsValidMentions() {
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?endDate=01-09-2018 12:30:00")
+
+                .then().assertThat()
+                .statusCode(200)
+                .body("id", hasSize(2))
+                .body("id[0]", equalTo(mention2.getId()))
+                .body("queryId[0]", equalTo(query2.getId()))
+                .body("id[1]", equalTo(mention3.getId()))
+                .body("queryId[1]", equalTo(query2.getId()));
+    }
+
+    @Test
+    public void viewMentionsOfQueryByIdWithDateBeforeAndLanguageCode_returnsValidMentions() {
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=en&endDate=01-09-2018 12:30:00")
+
+                .then().assertThat()
+                .statusCode(200)
+                .body("id", hasSize(1))
+                .body("id[0]", equalTo(mention2.getId()))
+                .body("queryId[0]", equalTo(query2.getId()));
+    }
+
+    @Test
+    public void viewMentionsOfQueryByIdWithDateAfter_returnsValidMentions() {
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?startDate=31-08-2018 16:00:00")
+
+                .then().assertThat()
+                .statusCode(200)
+                .body("id", hasSize(1))
+                .body("id[0]", equalTo(mention2.getId()))
+                .body("queryId[0]", equalTo(query2.getId()));
+    }
+
+    @Test
+    public void viewMentionsOfQueryByIdWithDateAfterAndLanguageCode_returnsValidMentions() {
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=en&startDate=31-08-2018 16:00:00")
+
+                .then().assertThat()
+                .statusCode(200)
+                .body("id", hasSize(1))
+                .body("id[0]", equalTo(mention2.getId()))
+                .body("queryId[0]", equalTo(query2.getId()));
+    }
+
+    @Test
+    public void viewMentionsOfQueryByIdWithDateRange_returnsValidMentions() {
+        with().get(createURLWithPort("/mentions/") + query2.getId()
+                + "/?startDate=30-08-2018 10:30:00&endDate=01-09-2018 12:00:00")
+
+                .then().assertThat()
+                .statusCode(200)
+                .body("id", hasSize(2))
+                .body("id[0]", equalTo(mention2.getId()))
+                .body("queryId[0]", equalTo(query2.getId()))
+                .body("id[1]", equalTo(mention3.getId()))
+                .body("queryId[1]", equalTo(query2.getId()));
+    }
+
+    @Test
+    public void viewMentionsOfQueryByIdWithDateRangeAndLanguageFilter_returnsValidMentions() {
+        with().get(createURLWithPort("/mentions/") + query2.getId()
+                + "/?languageCode=en&startDate=30-08-2018 10:30:00&endDate=01-09-2018 12:00:00")
+
+                .then().assertThat()
+                .statusCode(200)
+                .body("id", hasSize(1))
+                .body("id[0]", equalTo(mention2.getId()))
+                .body("queryId[0]", equalTo(query2.getId()));
+    }
 
     @Test
     public void viewAllMentions_returnsValidMentions() {
