@@ -141,7 +141,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void addNewQuery_returnsExpectedQuery() {
-        QueryRequestDTO queryRequestDTO = new QueryRequestDTO("new search", "en");
+        QueryRequestDTO queryRequestDTO = new QueryRequestDTO("new search", "pl");
 
         with().contentType(ContentType.JSON)
                 .body(queryRequestDTO)
@@ -151,7 +151,8 @@ public class miniananalyticsApiIT {
                 .then().assertThat()
                 .statusCode(200)
                 .body("id", equalTo(query2.getId() + 1))
-                .body("text", equalTo(queryRequestDTO.getSearch()));
+                .body("text", equalTo(queryRequestDTO.getSearch()))
+                .body("language", equalTo(queryRequestDTO.getLanguage()));
     }
 
     @Test
@@ -193,7 +194,7 @@ public class miniananalyticsApiIT {
                 .body("id", hasSize(1))
                 .body("id[0]", equalTo(mention3.getId()))
                 .body("queryId[0]", equalTo(query2.getId()))
-                .body("languageCode[0]", equalTo(mention3.getLanguageCode()));
+                .body("languageCode[0]", equalTo("de"));
     }
 
     @Test
