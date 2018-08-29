@@ -60,11 +60,11 @@ public class miniananalyticsApiIT {
     private final Query query2 = new Query(1, "another search", "");
 
     private final Mention mention1 = new Mention("123abc", 0, MentionType.TWITTER,
-            "this is a mention of a test query", testDate1, "en", 0);
+            "testAuthor1", "this is a mention of a test query", testDate1, "en", 0);
     private final Mention mention2 = new Mention("456def", 1, MentionType.TWITTER,
-            "this is a mention of another search", testDate1, "en", 0);
+            "testAuthor2", "this is a mention of another search", testDate1, "en", 0);
     private final Mention mention3 = new Mention("789hij", 1, MentionType.TWITTER,
-            "eine test Suche", testDate2, "de", 0);
+            "testAuthor1", "eine test Suche", testDate2, "de", 0);
 
     @ClassRule
     public static DockerComposeRule docker = DockerComposeRule.builder()
@@ -261,6 +261,17 @@ public class miniananalyticsApiIT {
         with().get(createURLWithPort("/mentions/") + query2.getId()
                 + "/?languageCode=en&startDate=30-08-2018 10:30:00&endDate=01-09-2018 12:00:00")
 
+                .then().assertThat()
+                .statusCode(200)
+                .body("id", hasSize(1))
+                .body("id[0]", equalTo(mention2.getId()))
+                .body("queryId[0]", equalTo(query2.getId()));
+    }
+
+    @Test
+    public void viewMentionsOfQueryByIdWithAuthorFilter_returnsValidMentions() {
+        with().get(createURLWithPort("/mentions/") + query2.getId()
+                + "/?author=testAuthor2")
                 .then().assertThat()
                 .statusCode(200)
                 .body("id", hasSize(1))

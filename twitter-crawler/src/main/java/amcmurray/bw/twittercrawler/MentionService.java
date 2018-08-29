@@ -47,7 +47,7 @@ public class MentionService {
         for (Tweet tweet : rawSearch.getTweets()) {
             Mention mention = new Mention(UUID.randomUUID().toString(),
                     query.getId(), MentionType.TWITTER,
-                    tweet.getText(), tweet.getCreatedAt(),
+                    tweet.getUser().getScreenName(), tweet.getText(), tweet.getCreatedAt(),
                     tweet.getLanguageCode(), tweet.getFavoriteCount());
             mentionRepository.insert(mention);
         }

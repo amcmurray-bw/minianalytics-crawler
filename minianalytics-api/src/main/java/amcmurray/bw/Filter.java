@@ -11,6 +11,7 @@ public class Filter {
     private Date startDate;
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:SS")
     private Date endDate;
+    private String author;
 
     public String getLanguageCode() {
         return languageCode;
@@ -34,5 +35,13 @@ public class Filter {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }

@@ -18,17 +18,19 @@ public class Mention {
     private String id;
     private int queryId;
     private MentionType mentionType;
+    private String author;
     private String text;
     private Date createdAt;
     private String languageCode;
     private int favouriteCount;
 
     public Mention(String id, int queryId, MentionType mentionType,
-                   String text, Date createdAt,
+                   String author, String text, Date createdAt,
                    String languageCode, int favouriteCount) {
         this.id = id;
         this.queryId = queryId;
         this.mentionType = mentionType;
+        this.author = author;
         this.text = text;
         this.createdAt = createdAt;
         this.languageCode = languageCode;
@@ -65,6 +67,10 @@ public class Mention {
 
     public MentionType getMentionType() {
         return mentionType;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public String getText() {

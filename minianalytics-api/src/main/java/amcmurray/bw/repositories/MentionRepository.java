@@ -33,10 +33,16 @@ public class MentionRepository {
             dynamicQuery.addCriteria(languageCodeCriteria);
         }
 
-        if (filter.getStartDate() != null && filter.getEndDate() != null) {
-            Criteria rangeCriteria = Criteria.where("createdAt").gte(filter.getStartDate()).lte((filter.getEndDate()));
+        //if the date range is valid, filter between
+        //else get after start date or before end date
+        if (filter.getStartDate() != null && filter.getEndDate() != null
+                && filter.getStartDate().compareTo(filter.getEndDate()) < 0) {
 
+            Criteria rangeCriteria = Criteria.where("createdAt")
+                    .gte(filter.getStartDate())
+                    .lte((filter.getEndDate()));
             dynamicQuery.addCriteria(rangeCriteria);
+
         } else if (filter.getStartDate() != null) {
             Criteria rangeCriteria = Criteria.where("createdAt").gte(filter.getStartDate());
             dynamicQuery.addCriteria(rangeCriteria);
@@ -46,8 +52,12 @@ public class MentionRepository {
             dynamicQuery.addCriteria(rangeCriteria);
         }
 
-        return mongoTemplate.find(dynamicQuery, Mention.class, "savedMentions");
+        if (filter.getAuthor() != null) {
+            Criteria authorCriteria = Criteria.where("author").is(filter.getAuthor());
+            dynamicQuery.addCriteria(authorCriteria);
+        }
 
+        return mongoTemplate.find(dynamicQuery, Mention.class, "savedMentions");
     }
 
     public List<Mention> findAllMentions() {
