@@ -18,6 +18,7 @@
         <module>twitter-domain-objects</module>
         <module>twitter-crawler</module>
         <module>minianalytics-api</module>
+        <module>storage</module>
     </modules>
 
     <dependencies></dependencies>
