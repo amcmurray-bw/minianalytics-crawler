@@ -5,30 +5,32 @@ import java.util.Objects;
 
 import org.mongodb.morphia.annotations.Entity;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Entity("savedMentions")
+@CompoundIndex(name = "mentionId", def = "{'id' : 1, 'queryId': 1}")
 @Document(collection = "savedMentions")
 public class Mention {
 
     @Id
     @org.mongodb.morphia.annotations.Id
     private String id;
-    @Indexed
     private int queryId;
     private MentionType mentionType;
+    private String author;
     private String text;
     private Date createdAt;
     private String languageCode;
     private int favouriteCount;
 
     public Mention(String id, int queryId, MentionType mentionType,
-                   String text, Date createdAt,
+                   String author, String text, Date createdAt,
                    String languageCode, int favouriteCount) {
         this.id = id;
         this.queryId = queryId;
         this.mentionType = mentionType;
+        this.author = author;
         this.text = text;
         this.createdAt = createdAt;
         this.languageCode = languageCode;
@@ -65,6 +67,10 @@ public class Mention {
 
     public MentionType getMentionType() {
         return mentionType;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public String getText() {

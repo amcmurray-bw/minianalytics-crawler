@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import amcmurray.bw.Filter;
 import amcmurray.bw.repositories.MentionRepository;
 import amcmurray.bw.twitterdomainobjects.Mention;
 
@@ -23,17 +24,17 @@ public class MentionService {
     /**
      * If a query is returned, find all mentions of the queryId
      *
+     * @param filter filter object for endpoints
      * @return list of mentions
      * @throws {QueryNotFoundException} if query not found
      */
-    public List<Mention> findAllMentionsOfQuery(int queryId) {
-
+    public List<Mention> findAllMentionsOfQueryWithFilters(int queryId, Filter filter) {
         queryService.findQueryById(queryId);
 
-        return mentionRepository.findAllByQueryId(queryId);
+        return mentionRepository.findMentionsOfQueryWithFilters(queryId, filter);
     }
 
     public List<Mention> getAllMentions() {
-        return mentionRepository.findAll();
+        return mentionRepository.findAllMentions();
     }
 }

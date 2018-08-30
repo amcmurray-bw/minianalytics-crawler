@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import amcmurray.bw.Filter;
 import amcmurray.bw.MentionPresenter;
 import amcmurray.bw.services.MentionService;
 import amcmurray.bw.twitterdomainobjects.MentionDTO;
@@ -30,9 +31,10 @@ public class MentionsController {
      * @return returns a list of MentionDTOs with the same queryId.
      */
     @GetMapping("/mentions/{queryId}")
-    public List<MentionDTO> viewMentionsOfQuery(@PathVariable("queryId") int queryId) {
+    public List<MentionDTO> viewMentionsOfQuery(@PathVariable("queryId") int queryId, Filter filter) {
+
         return mentionPresenter.toDTOs(
-                mentionService.findAllMentionsOfQuery(queryId));
+                mentionService.findAllMentionsOfQueryWithFilters(queryId, filter));
     }
 
     /**

@@ -14,10 +14,12 @@ public final class Query {
     @org.mongodb.morphia.annotations.Id
     private int id;
     private String text;
+    private String language;
 
-    public Query(int id, String text) {
+    public Query(int id, String text, String language) {
         this.id = id;
         this.text = text;
+        this.language = language;
     }
 
     @Override
@@ -41,5 +43,9 @@ public final class Query {
 
     public String getText() {
         return text;
+    }
+
+    public String getLanguage() {
+        return language;
     }
 }

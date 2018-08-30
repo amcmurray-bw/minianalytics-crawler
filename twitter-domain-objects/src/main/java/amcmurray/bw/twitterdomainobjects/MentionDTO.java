@@ -7,17 +7,19 @@ public class MentionDTO {
     private String id;
     private int queryId;
     private MentionType mentionType;
+    private String author;
     private String text;
     private String dateCreated;
     private String languageCode;
     private int favouriteCount;
 
     public MentionDTO(String id, int queryId, MentionType mentionType,
-                      String text, String dateCreated,
+                      String author, String text, String dateCreated,
                       String languageCode, int favouriteCount) {
         this.id = id;
         this.queryId = queryId;
         this.mentionType = mentionType;
+        this.author = author;
         this.dateCreated = dateCreated;
         this.text = text;
         this.languageCode = languageCode;
@@ -58,6 +60,10 @@ public class MentionDTO {
 
     public MentionType getMentionType() {
         return mentionType;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public String getText() {

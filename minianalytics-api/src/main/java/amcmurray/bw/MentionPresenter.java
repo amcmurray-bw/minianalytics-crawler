@@ -16,7 +16,7 @@ import amcmurray.bw.twitterdomainobjects.MentionDTO;
 public class MentionPresenter {
 
     private static final DateTimeFormatter dateFormat
-            = DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z");
+            = DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss z Z");
 
     private MentionDTO toDTO(Mention mention) {
         String date = convertDate(mention.getCreatedAt());
@@ -24,7 +24,9 @@ public class MentionPresenter {
         MentionDTO mentionDTO = new MentionDTO(mention.getId(),
                 mention.getQueryId(),
                 mention.getMentionType(),
-                mention.getText(), date,
+                mention.getAuthor(),
+                mention.getText(),
+                date,
                 mention.getLanguageCode(),
                 mention.getFavouriteCount());
 

@@ -29,22 +29,23 @@ public class MentionPresenterTest {
     private final String expectedId = "123";
     private final int expectedQueryId = 456;
     private final MentionType expectedMentionType = MentionType.TWITTER;
+    private final String expectedAuthor = "testAuthor";
     private final String expectedText = "mocktext";
     private final String expectedTestDate = ZonedDateTime.ofInstant(
             testDate.toInstant(), ZoneId.of("UTC"))
-            .format(DateTimeFormatter.ofPattern("dd:MM:YYYY HH:mm:ss z Z"));
+            .format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss z Z"));
     private final String expectedLanguage = "en";
     private final int expectedFavourites = 0;
 
 
     private final Mention mention = new Mention(
             expectedId, expectedQueryId, expectedMentionType,
-            expectedText, testDate,
+            expectedAuthor, expectedText, testDate,
             expectedLanguage, expectedFavourites);
 
     private final MentionDTO mentionDto = new MentionDTO(
             expectedId, expectedQueryId, expectedMentionType,
-            expectedText, expectedTestDate,
+            expectedAuthor, expectedText, expectedTestDate,
             expectedLanguage, expectedFavourites);
 
     private final List<Mention> listOfMentions = Arrays.asList(mention,

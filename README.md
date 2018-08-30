@@ -45,11 +45,15 @@ Then, head to:
 localhost:8081
 ```
 where you can use:
-* /query (to make a new query)
+
+POST
+* /queries (to make a new query)
+
+GET
 * /queries (to get all queries)
 * /queries/_{queryId}_ (to get a specific query)
-* /mentions (get all mentions)
-* /mentions/_{queryId}_ (get all mentions for a query)
+* /mentions (to get all mentions)
+* /mentions/_{queryId}_ (to get all mentions for a query)
 
 ## Built With
 
