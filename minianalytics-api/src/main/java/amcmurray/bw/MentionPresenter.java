@@ -24,7 +24,9 @@ public class MentionPresenter {
         MentionDTO mentionDTO = new MentionDTO(mention.getId(),
                 mention.getQueryId(),
                 mention.getMentionType(),
-                mention.getAuthor(), mention.getText(), date,
+                mention.getAuthor(),
+                mention.getText(),
+                date,
                 mention.getLanguageCode(),
                 mention.getFavouriteCount());
 

@@ -7,9 +7,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Filter {
 
     private String languageCode;
-    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:SS")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date startDate;
-    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:SS")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date endDate;
     private String author;
 

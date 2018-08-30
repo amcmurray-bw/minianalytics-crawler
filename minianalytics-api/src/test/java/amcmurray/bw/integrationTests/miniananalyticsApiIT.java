@@ -48,10 +48,10 @@ public class miniananalyticsApiIT {
     private static final String DATABASE_NAME = "minianalytics";
     private static Datastore datastore;
 
-    private final Date testDate1 = Timestamp.valueOf(LocalDateTime.parse("2018.08.31.18.30.00",
-            DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss")));
-    private final Date testDate2 = Timestamp.valueOf(LocalDateTime.parse("2018.08.31.13.45.00",
-            DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss")));
+    private final Date testDate1 = Timestamp.valueOf(LocalDateTime.parse("2018-08-31T18:30:00.000",
+            DateTimeFormatter.ISO_DATE_TIME));
+    private final Date testDate2 = Timestamp.valueOf(LocalDateTime.parse("2018-08-31T13:45:00.000",
+            DateTimeFormatter.ISO_DATE_TIME));
     private final String testDateMentionDTO = ZonedDateTime
             .ofInstant(testDate1.toInstant(), ZoneId.of("UTC"))
             .format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss z Z"));
@@ -199,7 +199,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewMentionsOfQueryByIdWithDateBefore_returnsValidMentions() {
-        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?endDate=01-09-2018 12:30:00")
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?endDate=2018-09-01T12:30:00.000-0000")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -212,7 +212,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewMentionsOfQueryByIdWithDateBeforeAndLanguageCode_returnsValidMentions() {
-        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=en&endDate=01-09-2018 12:30:00")
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=en&endDate=2018-09-01T12:30:00.000-0000")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -223,7 +223,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewMentionsOfQueryByIdWithDateAfter_returnsValidMentions() {
-        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?startDate=31-08-2018 16:00:00")
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?startDate=2018-08-31T16:00:00.000-0000")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -234,7 +234,7 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewMentionsOfQueryByIdWithDateAfterAndLanguageCode_returnsValidMentions() {
-        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=en&startDate=31-08-2018 16:00:00")
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=en&startDate=2018-08-30T16:00:00.000-0000")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -246,7 +246,7 @@ public class miniananalyticsApiIT {
     @Test
     public void viewMentionsOfQueryByIdWithDateRange_returnsValidMentions() {
         with().get(createURLWithPort("/mentions/") + query2.getId()
-                + "/?startDate=30-08-2018 10:30:00&endDate=01-09-2018 12:00:00")
+                + "/?startDate=2018-08-30T10:30:00.000-0000&endDate=2018-09-01T12:00:00.000-0000")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -260,7 +260,7 @@ public class miniananalyticsApiIT {
     @Test
     public void viewMentionsOfQueryByIdWithDateRangeAndLanguageFilter_returnsValidMentions() {
         with().get(createURLWithPort("/mentions/") + query2.getId()
-                + "/?languageCode=en&startDate=30-08-2018 10:30:00&endDate=01-09-2018 12:00:00")
+                + "/?languageCode=en&startDate=2018-08-30T10:30:00.000-0000&endDate=2018-09-01T12:00:00.000-0000")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -271,8 +271,8 @@ public class miniananalyticsApiIT {
 
     @Test
     public void viewMentionsOfQueryByIdWithAuthorFilter_returnsValidMentions() {
-        with().get(createURLWithPort("/mentions/") + query2.getId()
-                + "/?author=testAuthor2")
+        with().get(createURLWithPort("/mentions/") + query2.getId()+"/?author=testAuthor2")
+
                 .then().assertThat()
                 .statusCode(200)
                 .body("id", hasSize(1))
