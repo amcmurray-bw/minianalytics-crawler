@@ -21,11 +21,11 @@ public class IntegrationTestRule implements TestRule {
 
     private static final String MONGO_CONTAINER_NAME = "mongodbtest";
     private static final int MONGO_INTERNAL_PORT = 27017;
-    private static int MONGO_EXTERNAL_PORT;
+    private static int mongoExternalPort;
 
     private static final String API_CONTAINER_NAME = "minianalyticsapitest";
     private static final int API_INTERNAL_PORT = 8081;
-    private static int API_EXTERNAL_PORT;
+    private static int apiExternalPort;
 
     private static final String DATABASE_NAME = "minianalytics";
     private static Datastore datastore;
@@ -47,11 +47,11 @@ public class IntegrationTestRule implements TestRule {
 
     private static void initialize() {
         //getting external port for API service
-        API_EXTERNAL_PORT = docker.containers()
+        apiExternalPort = docker.containers()
                 .container(API_CONTAINER_NAME)
                 .port(API_INTERNAL_PORT).getExternalPort();
 
-        MONGO_EXTERNAL_PORT = docker.containers()
+        mongoExternalPort = docker.containers()
                 .container(MONGO_CONTAINER_NAME)
                 .port(MONGO_INTERNAL_PORT).getExternalPort();
 
@@ -61,7 +61,7 @@ public class IntegrationTestRule implements TestRule {
 
         //datastore uses mongo instance
         datastore = morphia.createDatastore(
-                new MongoClient("localhost", MONGO_EXTERNAL_PORT), DATABASE_NAME);
+                new MongoClient("localhost", mongoExternalPort), DATABASE_NAME);
         datastore.ensureIndexes();
     }
 
@@ -96,7 +96,7 @@ public class IntegrationTestRule implements TestRule {
     }
 
     public int getApiExternalPort() {
-        return API_EXTERNAL_PORT;
+        return apiExternalPort;
     }
 
     public Datastore getDatastore() {
