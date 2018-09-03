@@ -4,6 +4,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import amcmurray.bw.twitterdomainobjects.Mention;
 
-public interface MentionStorageRepository extends MongoRepository<Mention, String> {
+public interface MentionRepository extends MongoRepository<Mention, String> {
 
 }

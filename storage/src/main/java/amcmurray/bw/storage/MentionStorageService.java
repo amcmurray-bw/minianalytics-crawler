@@ -10,20 +10,20 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import amcmurray.bw.storage.repositories.MentionStorageRepository;
+import amcmurray.bw.storage.repositories.MentionRepository;
 import amcmurray.bw.twitterdomainobjects.Mention;
 
 @Component
-public class MentionConsumer {
+public class MentionStorageService {
 
-    private final MentionStorageRepository mentionStorageRepository;
+    private final MentionRepository mentionRepository;
     private final ObjectMapper mapper;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MentionConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MentionStorageService.class);
 
     @Autowired
-    public MentionConsumer(MentionStorageRepository mentionStorageRepository, ObjectMapper mapper) {
-        this.mentionStorageRepository = mentionStorageRepository;
+    public MentionStorageService(MentionRepository mentionRepository, ObjectMapper mapper) {
+        this.mentionRepository = mentionRepository;
         this.mapper = mapper;
     }
 
@@ -32,8 +32,8 @@ public class MentionConsumer {
 
         try {
             Mention mention = mapper.readValue(content, Mention.class);
-            LOGGER.info("Adding Mention to DB");
-            mentionStorageRepository.insert(mention);
+            LOGGER.debug("Adding Mention to DB " + mention.getId());
+            mentionRepository.insert(mention);
         } catch (IOException e) {
             LOGGER.warn("Error adding Mention to DB " + e.getMessage());
         }

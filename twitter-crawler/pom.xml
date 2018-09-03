@@ -53,12 +53,6 @@
         </dependency>
 
         <dependency>
-            <groupId>amcmurray.bw</groupId>
-            <artifactId>storage</artifactId>
-            <version>0.1.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_2.11</artifactId>
             <version>2.0.0</version>
