@@ -16,10 +16,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 @Configuration
 public class StorageConfig {
 
-
     private static final String address = "kafka:9092";
     private static final String groupId = "kafka-mentions-group";
-
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {

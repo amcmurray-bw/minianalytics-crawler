@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import amcmurray.bw.twittercrawler.repositories.MentionRepository;
 import amcmurray.bw.twitterdomainobjects.Mention;
 import amcmurray.bw.twitterdomainobjects.MentionType;
 import amcmurray.bw.twitterdomainobjects.Query;
@@ -29,7 +28,6 @@ import amcmurray.bw.twitterdomainobjects.Query;
 public class MentionService {
 
     private final Producer<String, String> producer;
-    private final MentionRepository mentionRepository;
     private final Twitter twitter;
     private final ObjectMapper jsonObjectMapper;
     private final Logger logger = LoggerFactory.getLogger(MentionService.class);
@@ -40,10 +38,9 @@ public class MentionService {
 
 
     @Autowired
-    public MentionService(Producer<String, String> producer, MentionRepository mentionRepository, Twitter twitter, ObjectMapper jsonObjectMapper) {
+    public MentionService(Producer<String, String> producer, Twitter twitter, ObjectMapper jsonObjectMapper) {
 
         this.producer = producer;
-        this.mentionRepository = mentionRepository;
         this.twitter = twitter;
         this.jsonObjectMapper = jsonObjectMapper;
     }
@@ -68,18 +65,15 @@ public class MentionService {
                     query.getId(), MentionType.TWITTER,
                     tweet.getUser().getScreenName(), tweet.getText(), tweet.getCreatedAt(),
                     tweet.getLanguageCode(), tweet.getFavoriteCount());
-            mentionRepository.insert(mention);
 
             try {
                 String mappedObject = jsonObjectMapper.writeValueAsString(mention);
                 producer.send(new ProducerRecord<String, String>("mentions", mention.getId(), mappedObject));
-
             } catch (JsonProcessingException e) {
                 logger.info("Error occurred while producing to kafka topic " + kafkaTopic + " at ",
                         DATE_TIME_FORMATTER.format(Instant.now()));
                 logger.error(e.getMessage() + " " + e.getCause().toString());
             }
-
         }
     }
 }

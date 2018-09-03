@@ -33,6 +33,7 @@ public class QueryIT {
     public void tearDown() {
         dropDB();
     }
+
     @Test
     public void viewQueryById_getsExpectedQuery() {
         with().get(createURLWithPort("/queries/0"))
