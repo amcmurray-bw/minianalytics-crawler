@@ -75,7 +75,7 @@ public class MentionService {
                 producer.send(new ProducerRecord<String, String>("mentions", mention.getId(), mappedObject));
 
             } catch (JsonProcessingException e) {
-                logger.info("Error occured while producing to kafka topic " + kafkaTopic + " at ",
+                logger.info("Error occurred while producing to kafka topic " + kafkaTopic + " at ",
                         DATE_TIME_FORMATTER.format(Instant.now()));
                 logger.error(e.getMessage() + " " + e.getCause().toString());
             }

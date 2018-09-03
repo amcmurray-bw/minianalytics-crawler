@@ -6,6 +6,7 @@ services:
     ports:
       - "2181:2181"
   kafka:
+    container_name: kafka
     image: wurstmeister/kafka:2.11-2.0.0
     ports:
       - "9092"
@@ -48,3 +49,11 @@ services:
       - ./data/mongo:/data/db
     ports:
       - 27017:27017
+
+  storage:
+    build: storage/.
+    restart: always
+    container_name: storage
+    working_dir: /opt/app
+    environment:
+      WAIT_HOSTS: mongodb:27017
