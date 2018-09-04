@@ -40,7 +40,7 @@ services:
       - 8080:8080
     working_dir: /opt/app
     environment:
-      WAIT_HOSTS: kafka:9092
+      WAIT_HOSTS: kafka:9092,mongodb:27017
 
   mongodb:
     container_name: mongodb
@@ -56,4 +56,4 @@ services:
     container_name: storage
     working_dir: /opt/app
     environment:
-      WAIT_HOSTS: kafka:9092
+      WAIT_HOSTS: kafka:9092,mongodb:27017
