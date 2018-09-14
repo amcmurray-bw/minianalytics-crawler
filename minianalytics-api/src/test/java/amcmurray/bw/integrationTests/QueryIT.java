@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import amcmurray.bw.QueryRequestDTO;
-import amcmurray.bw.exceptions.QueryExceptions;
 import amcmurray.bw.twitterdomainobjects.Query;
 import io.restassured.http.ContentType;
 
@@ -49,8 +48,8 @@ public class QueryIT {
 
                 .then().assertThat()
                 .statusCode(404)
-                .body("exception",
-                        equalTo(QueryExceptions.QueryNotFoundException.class.getName()));
+                .body("message",
+                        equalTo("Query not found."));
     }
 
     @Test
@@ -90,11 +89,11 @@ public class QueryIT {
                 .body(queryRequestDTO)
                 .when()
                 .post((createURLWithPort("/queries")))
-
+                
                 .then().assertThat()
                 .statusCode(400)
-                .body("exception",
-                        equalTo(QueryExceptions.QuerySearchNullException.class.getName()));
+                .body("message",
+                        equalTo("Query text must not be empty!"));
     }
 
     private String createURLWithPort(String uri) {

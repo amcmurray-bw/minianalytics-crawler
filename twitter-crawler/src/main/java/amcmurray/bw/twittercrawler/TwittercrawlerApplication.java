@@ -2,11 +2,10 @@ package amcmurray.bw.twittercrawler;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.social.TwitterAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
-@SpringBootApplication(exclude = TwitterAutoConfiguration.class)
+@SpringBootApplication
 public class TwittercrawlerApplication {
 
     public static void main(String[] args) {
