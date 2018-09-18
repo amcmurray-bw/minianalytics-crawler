@@ -1,6 +1,5 @@
 package amcmurray.bw.twittercrawler;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -61,11 +60,8 @@ public class MentionService {
 
             try {
                 kafkaTemplate.send("mentions", mention);
-
             } catch (Exception e) {
-                logger.info("Error occurred while producing to kafka topic " + kafkaTopic + " at ",
-                        DATE_TIME_FORMATTER.format(Instant.now()));
-                logger.error(e.getMessage() + " " + e.getCause().toString());
+                logger.error("Error occurred while producing to kafka topic " + kafkaTopic, e);
             }
         }
     }

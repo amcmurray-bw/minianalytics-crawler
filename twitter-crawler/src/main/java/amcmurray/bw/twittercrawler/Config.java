@@ -21,6 +21,7 @@ import amcmurray.bw.twitterdomainobjects.Mention;
 
 @Configuration
 public class Config {
+    private static final String BOOTSTRAP_SERVER = "kafka:9092";
 
     @Bean
     public Twitter twitter(final @Value("${spring.social.twitter.appId}") String appId,
@@ -34,11 +35,10 @@ public class Config {
         return Executors.newSingleThreadExecutor();
     }
 
-
     @Bean
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 

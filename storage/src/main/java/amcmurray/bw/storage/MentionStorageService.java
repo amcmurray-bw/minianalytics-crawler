@@ -2,6 +2,7 @@ package amcmurray.bw.storage;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -41,8 +42,12 @@ public class MentionStorageService implements Runnable {
                 ConsumerRecords<String, Mention> records = kafkaConsumer.poll(Duration.ofMillis(1000));
 
                 for (ConsumerRecord<String, Mention> record : records) {
-                    mentionRepository.save(record.value());
-                    logger.debug(record.key() + " saved.");
+                    try {
+                        mentionRepository.save(record.value());
+                        logger.info("{} saved.", record.value().getId());
+                    } catch (Exception e) {
+                        logger.error("Error occurred while saving to database ", e);
+                    }
                 }
 
                 if (!records.isEmpty()) {
@@ -65,7 +70,12 @@ public class MentionStorageService implements Runnable {
 
     public void start() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(this);
+
+        CompletableFuture.runAsync(this, executorService)
+                .exceptionally(e -> {
+                    logger.error("Exception in kafka consumer", e);
+                    return null;
+                });
     }
 }
 
