@@ -11,6 +11,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
+import org.apache.solr.client.solrj.SolrClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class MentionStorageService implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(MentionStorageService.class);
     private final KafkaConsumer<String, Mention> kafkaConsumer;
     private final AtomicBoolean closed = new AtomicBoolean(false);
+
+    @Autowired
+    private SolrClient solrClient;
 
     @Autowired
     private MentionRepository mentionRepository;
@@ -44,6 +48,8 @@ public class MentionStorageService implements Runnable {
                 for (ConsumerRecord<String, Mention> record : records) {
                     try {
                         mentionRepository.save(record.value());
+                        solrClient.addBean(record.value());
+                        solrClient.commit();
                         logger.info("{} saved.", record.value().getId());
                     } catch (Exception e) {
                         logger.error("Error occurred while saving to database ", e);

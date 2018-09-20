@@ -5,6 +5,9 @@ import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.impl.XMLResponseParser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
@@ -16,6 +19,7 @@ public class StorageConfig {
 
     private static final String BOOTSTRAP_SERVER = "kafka:9092";
     private static final String GROUP_ID = "storage-mention-group";
+    private static final String SOLR_URL = "http://solr:8983/solr/mentions";
 
     @Bean
     public KafkaConsumer<String, Mention> kafkaConsumer() {
@@ -34,5 +38,12 @@ public class StorageConfig {
     @Bean(initMethod = "start", destroyMethod = "shutdown")
     public MentionStorageService consumerThread() {
         return new MentionStorageService(kafkaConsumer());
+    }
+
+    @Bean
+    public SolrClient solrClient() {
+        HttpSolrClient httpSolrClient = new HttpSolrClient.Builder(SOLR_URL).build();
+        httpSolrClient.setParser(new XMLResponseParser());
+        return httpSolrClient;
     }
 }

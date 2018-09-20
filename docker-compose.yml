@@ -56,4 +56,18 @@ services:
     container_name: storage
     working_dir: /opt/app
     environment:
-      WAIT_HOSTS: kafka:9092,mongodb:27017
+      WAIT_HOSTS: kafka:9092,mongodb:27017,solr:8983
+
+  solr:
+    container_name: solr
+    image: solr
+    ports:
+      - "8983:8983"
+    volumes:
+      - ./data:/opt/solr/server/solr/mycores
+      - ./data/solr:/data/db
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-precreate
+      - mentions
+
