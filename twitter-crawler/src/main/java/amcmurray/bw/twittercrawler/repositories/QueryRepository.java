@@ -6,7 +6,4 @@ import amcmurray.bw.twitterdomainobjects.Query;
 
 public interface QueryRepository extends MongoRepository<Query, String> {
 
-    Query findById(String id);
-    Query findByText(String text);
-
 }

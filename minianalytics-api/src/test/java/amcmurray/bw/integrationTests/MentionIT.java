@@ -18,7 +18,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import amcmurray.bw.exceptions.QueryExceptions;
 import amcmurray.bw.twitterdomainobjects.Mention;
 import amcmurray.bw.twitterdomainobjects.MentionType;
 import amcmurray.bw.twitterdomainobjects.Query;
@@ -29,9 +28,9 @@ public class MentionIT {
     @ClassRule
     public static IntegrationTestRule rule = IntegrationTestRule.INSTANCE;
 
-    private final Date testDate1 = Timestamp.valueOf(LocalDateTime.parse("2018-08-31T18:30:00.000",
+    private final Date testDate1 = Timestamp.valueOf(LocalDateTime.parse("2018-08-31T18:30:00.000-00:00",
             DateTimeFormatter.ISO_DATE_TIME));
-    private final Date testDate2 = Timestamp.valueOf(LocalDateTime.parse("2018-08-31T13:45:00.000",
+    private final Date testDate2 = Timestamp.valueOf(LocalDateTime.parse("2018-08-31T13:45:00.000-00:00",
             DateTimeFormatter.ISO_DATE_TIME));
     private final String testDateMentionDTO = ZonedDateTime
             .ofInstant(testDate1.toInstant(), ZoneId.of("UTC"))
@@ -87,7 +86,7 @@ public class MentionIT {
 
     @Test
     public void viewMentionsOfQueryByIdWithDateBefore_returnsValidMentions() {
-        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?endDate=2018-09-01T12:30:00.000-0000")
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?endDate=2018-09-01T12:30:00.000-00:00")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -100,7 +99,7 @@ public class MentionIT {
 
     @Test
     public void viewMentionsOfQueryByIdWithDateBeforeAndLanguageCode_returnsValidMentions() {
-        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=en&endDate=2018-09-01T12:30:00.000-0000")
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=en&endDate=2018-09-01T12:30:00.000-00:00")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -111,7 +110,7 @@ public class MentionIT {
 
     @Test
     public void viewMentionsOfQueryByIdWithDateAfter_returnsValidMentions() {
-        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?startDate=2018-08-31T16:00:00.000-0000")
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?startDate=2018-08-31T16:00:00.000-00:00")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -122,7 +121,7 @@ public class MentionIT {
 
     @Test
     public void viewMentionsOfQueryByIdWithDateAfterAndLanguageCode_returnsValidMentions() {
-        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=en&startDate=2018-08-30T16:00:00.000-0000")
+        with().get(createURLWithPort("/mentions/") + query2.getId() + "/?languageCode=en&startDate=2018-08-30T16:00:00.000-00:00")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -134,7 +133,7 @@ public class MentionIT {
     @Test
     public void viewMentionsOfQueryByIdWithDateRange_returnsValidMentions() {
         with().get(createURLWithPort("/mentions/") + query2.getId()
-                + "/?startDate=2018-08-30T10:30:00.000-0000&endDate=2018-09-01T12:00:00.000-0000")
+                + "/?startDate=2018-08-30T10:30:00.000-00:00&endDate=2018-09-01T12:00:00.000-00:00").prettyPeek()
 
                 .then().assertThat()
                 .statusCode(200)
@@ -148,7 +147,7 @@ public class MentionIT {
     @Test
     public void viewMentionsOfQueryByIdWithDateRangeAndLanguageFilter_returnsValidMentions() {
         with().get(createURLWithPort("/mentions/") + query2.getId()
-                + "/?languageCode=en&startDate=2018-08-30T10:30:00.000-0000&endDate=2018-09-01T12:00:00.000-0000")
+                + "/?languageCode=en&startDate=2018-08-30T10:30:00.000-00:00&endDate=2018-09-01T12:00:00.000-00:00")
 
                 .then().assertThat()
                 .statusCode(200)
@@ -192,8 +191,8 @@ public class MentionIT {
 
                 .then().assertThat()
                 .statusCode(404)
-                .body("exception",
-                        equalTo(QueryExceptions.QueryNotFoundException.class.getName()));
+                .body("message",
+                        equalTo("Query not found."));
     }
 
     private String createURLWithPort(String uri) {

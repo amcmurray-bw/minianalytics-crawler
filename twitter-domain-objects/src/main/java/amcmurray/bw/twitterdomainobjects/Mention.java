@@ -57,6 +57,9 @@ public class Mention {
         return Objects.hash(id, queryId, mentionType, text, createdAt, languageCode, favouriteCount);
     }
 
+    public Mention() {
+    }
+
     public String getId() {
         return id;
     }

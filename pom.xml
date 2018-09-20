@@ -11,13 +11,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.10.RELEASE</version>
+        <version>2.0.3.RELEASE</version>
     </parent>
 
     <modules>
         <module>twitter-domain-objects</module>
         <module>twitter-crawler</module>
         <module>minianalytics-api</module>
+        <module>storage</module>
     </modules>
 
     <dependencies></dependencies>
